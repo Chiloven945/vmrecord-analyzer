@@ -9,6 +9,7 @@ const router = useRouter()
 const {filters, filtered, reset} = useRecordFilters(computed(() => store.records))
 
 const page = ref(1)
+const topAnchor = ref<HTMLElement | null>(null)
 const itemsPerPage = 50
 const selectedRecord = ref<NormalizedRecord | null>(null)
 const applyingRoute = ref(false)
@@ -73,6 +74,25 @@ const paginatedRecords = computed(() => {
   return filtered.value.slice(start, end)
 })
 
+
+function scrollToTopAnchor() {
+  if (!import.meta.client) return
+  const top = topAnchor.value
+      ? topAnchor.value.getBoundingClientRect().top + window.scrollY - 24
+      : 0
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: 'smooth'
+  })
+}
+
+watch(page, async (value, oldValue) => {
+  if (value === oldValue) return
+  await nextTick()
+  scrollToTopAnchor()
+})
+
 watch(filtered, () => {
   page.value = 1
 })
@@ -87,7 +107,7 @@ function closeRecord() {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div ref="topAnchor" class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
         <h1 class="text-3xl font-semibold text-highlighted">记录浏览</h1>

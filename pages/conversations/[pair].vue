@@ -12,6 +12,7 @@ const {records, participants, summary} = useConversation(pair)
 
 const itemsPerPage = 50
 const page = ref(1)
+const topAnchor = ref<HTMLElement | null>(null)
 const selectedRecord = ref<NormalizedRecord | null>(null)
 
 const leftPlayer = computed(() => participants.value[0] || 'unknown')
@@ -45,6 +46,25 @@ const paginatedRecords = computed(() => {
   return records.value.slice(start, start + itemsPerPage)
 })
 
+
+function scrollToTopAnchor() {
+  if (!import.meta.client) return
+  const top = topAnchor.value
+      ? topAnchor.value.getBoundingClientRect().top + window.scrollY - 24
+      : 0
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: 'smooth'
+  })
+}
+
+watch(page, async (value, oldValue) => {
+  if (value === oldValue) return
+  await nextTick()
+  scrollToTopAnchor()
+})
+
 watch(records, () => {
   page.value = 1
 })
@@ -59,7 +79,7 @@ function closeRecord() {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div ref="topAnchor" class="space-y-6">
     <UButton to="/records" color="neutral" variant="ghost" icon="i-lucide-arrow-left">返回记录列表</UButton>
 
     <UAlert

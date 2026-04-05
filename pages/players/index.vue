@@ -11,6 +11,7 @@ const sort = ref<'recent-desc' | 'recent-asc' | 'name-asc' | 'name-desc' | 'reco
 const start = ref<string | undefined>()
 const end = ref<string | undefined>()
 const page = ref(1)
+const topAnchor = ref<HTMLElement | null>(null)
 const itemsPerPage = 24
 
 const sortOptions = [
@@ -134,6 +135,25 @@ const paginatedPlayers = computed(() => {
   return filteredPlayers.value.slice(startIndex, startIndex + itemsPerPage)
 })
 
+
+function scrollToTopAnchor() {
+  if (!import.meta.client) return
+  const top = topAnchor.value
+      ? topAnchor.value.getBoundingClientRect().top + window.scrollY - 24
+      : 0
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: 'smooth'
+  })
+}
+
+watch(page, async (value, oldValue) => {
+  if (value === oldValue) return
+  await nextTick()
+  scrollToTopAnchor()
+})
+
 watch([search, serverFilters, typeFilters, sort, start, end], () => {
   page.value = 1
 }, {deep: true})
@@ -150,7 +170,7 @@ function clearFilters() {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div ref="topAnchor" class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
         <h1 class="text-3xl font-semibold text-highlighted">玩家列表</h1>
