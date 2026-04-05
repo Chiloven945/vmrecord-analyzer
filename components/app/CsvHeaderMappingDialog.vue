@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {CsvFieldName, CsvHeaderMapping} from '~/utils/csv'
-import {CSV_FIELD_OPTIONS, REQUIRED_CSV_FIELDS} from '~/utils/csv'
+import type {CsvFieldName, CsvHeaderMapping} from '~/utils/csv.client'
+import {CSV_FIELD_OPTIONS, REQUIRED_CSV_FIELDS} from '~/utils/csv.client'
 
 const props = defineProps<{
   open: boolean

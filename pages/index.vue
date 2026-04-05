@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useRecordsStore} from '~/stores/records'
 import {type PreparedCsvImport, useCsvImport} from '~/composables/useCsvImport'
-import type {CsvHeaderMapping} from '~/utils/csv'
+import type {CsvHeaderMapping} from '~/utils/csv.client'
 import type {NormalizedRecord} from '~/types/record'
 
 const store = useRecordsStore()
