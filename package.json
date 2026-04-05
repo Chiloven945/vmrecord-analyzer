@@ -1,0 +1,25 @@
+{
+  "name": "vmrecord-analyzer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.0.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@vueuse/core": "^13.0.0",
+    "dayjs": "^1.11.13",
+    "nuxt": "latest",
+    "papaparse": "^5.5.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.101",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@10.5.2"
+}

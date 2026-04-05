@@ -1,0 +1,6 @@
+type,timestamp,server,sender_name,receiver_name,message,sender_uuid,sender_prefix,sender_suffix,receiver_uuid,receiver_prefix,receiver_suffix,command
+CHAT,2026-04-01 22:13:56,Survival,HenryEmrys,"",根本玩不了,8bdae88d-c911-3e6e-a0ad-6551cbc8afcc,<gray>[DEFAULT],</gray>,"","","",chat
+PRIVATE_MESSAGE,2026-04-01 22:47:43,Lobby,TheUntitled,yilite,ima quit minecraft,0bb9a9f0-5cae-3322-9a4f-a26617f4cd22,<gray>[DEFAULT],</gray>,201a601d-d3ae-37df-b20f-422d2de81561,<gray>[DEFAULT],</gray>,msg
+CHAT,2026-04-05 17:29:48,Lobby,Chiloven945,"",test,e03316b7-ce12-3cee-b1a4-4d5b6298513d,<yellow>[徐秦瑶还我地图]</yellow><red>[ADMIN],</red>,"","","",chat
+JOIN,2026-04-05 18:20:59,Login,Chiloven945,"","",e03316b7-ce12-3cee-b1a4-4d5b6298513d,<yellow>[徐秦瑶还我地图]</yellow><red>[ADMIN],</red>,"","","",join
+TRANSFER,2026-04-05 18:21:06,Lobby,Chiloven945,"",Login -> Lobby,e03316b7-ce12-3cee-b1a4-4d5b6298513d,<yellow>[徐秦瑶还我地图]</yellow><red>[ADMIN],</red>,"","","",transfer
