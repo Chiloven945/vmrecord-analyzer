@@ -1,14 +1,71 @@
 <script setup lang="ts">
-import type {NormalizedRecord} from '~/types/record'
+import type {NormalizedRecord, RecordFilterState} from '~/types/record'
 import {useRecordsStore} from '~/stores/records'
 import {useRecordFilters} from '~/composables/useRecordFilters'
 
 const store = useRecordsStore()
+const route = useRoute()
+const router = useRouter()
 const {filters, filtered, reset} = useRecordFilters(computed(() => store.records))
 
 const page = ref(1)
 const itemsPerPage = 50
 const selectedRecord = ref<NormalizedRecord | null>(null)
+const applyingRoute = ref(false)
+
+function readStringParam(value: unknown) {
+  if (Array.isArray(value)) return String(value[0] || '')
+  return typeof value === 'string' ? value : ''
+}
+
+function readArrayParam(value: unknown) {
+  const text = readStringParam(value)
+  return text ? text.split(',').map((item) => item.trim()).filter(Boolean) : []
+}
+
+function applyQueryToFilters(query: Record<string, unknown>) {
+  applyingRoute.value = true
+  filters.q = readStringParam(query.q)
+  filters.types = readArrayParam(query.type)
+  filters.servers = readArrayParam(query.server)
+  filters.players = readArrayParam(query.player)
+  filters.start = readStringParam(query.start) || undefined
+  filters.end = readStringParam(query.end) || undefined
+  filters.sort = (readStringParam(query.sort) || 'time-desc') as RecordFilterState['sort']
+  page.value = 1
+  nextTick(() => {
+    applyingRoute.value = false
+  })
+}
+
+function buildQueryFromFilters() {
+  const query: Record<string, string> = {}
+  if (filters.q.trim()) query.q = filters.q.trim()
+  if (filters.types.length) query.type = filters.types.join(',')
+  if (filters.servers.length) query.server = filters.servers.join(',')
+  if (filters.players.length) query.player = filters.players.join(',')
+  if (filters.start) query.start = filters.start
+  if (filters.end) query.end = filters.end
+  if (filters.sort !== 'time-desc') query.sort = filters.sort
+  return query
+}
+
+watch(
+    () => route.query,
+    (query) => {
+      applyQueryToFilters(query as Record<string, unknown>)
+    },
+    {immediate: true}
+)
+
+watch(
+    filters,
+    () => {
+      if (applyingRoute.value) return
+      router.replace({query: buildQueryFromFilters()})
+    },
+    {deep: true}
+)
 
 const paginatedRecords = computed(() => {
   const start = (page.value - 1) * itemsPerPage

@@ -10,6 +10,8 @@ const typeFilters = ref<string[]>([])
 const sort = ref<'recent-desc' | 'recent-asc' | 'name-asc' | 'name-desc' | 'records-desc' | 'records-asc'>('records-desc')
 const start = ref<string | undefined>()
 const end = ref<string | undefined>()
+const page = ref(1)
+const itemsPerPage = 24
 
 const sortOptions = [
   {label: '总记录（高到低）', value: 'records-desc'},
@@ -127,6 +129,15 @@ const filteredPlayers = computed(() => {
   })
 })
 
+const paginatedPlayers = computed(() => {
+  const startIndex = (page.value - 1) * itemsPerPage
+  return filteredPlayers.value.slice(startIndex, startIndex + itemsPerPage)
+})
+
+watch([search, serverFilters, typeFilters, sort, start, end], () => {
+  page.value = 1
+}, {deep: true})
+
 function clearFilters() {
   search.value = ''
   serverFilters.value = []
@@ -134,6 +145,7 @@ function clearFilters() {
   sort.value = 'records-desc'
   start.value = undefined
   end.value = undefined
+  page.value = 1
 }
 </script>
 
@@ -222,10 +234,20 @@ function clearFilters() {
         </div>
       </UCard>
 
-      <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
+        <UPagination
+            v-model:page="page"
+            :total="filteredPlayers.length"
+            :items-per-page="itemsPerPage"
+            show-edges
+            active-color="primary"
+            active-variant="solid"
+        />
+      </div>
 
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <PlayerCard v-for="entry in filteredPlayers" :key="entry.player.name" :player="entry.player"/>
+        <PlayerCard v-for="entry in paginatedPlayers" :key="entry.player.name" :player="entry.player"/>
       </div>
     </template>
   </div>
