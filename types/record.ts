@@ -97,6 +97,21 @@ export interface PlayerProfile {
     suffixes: string[]
 }
 
+export interface ServerProfile {
+    name: string
+    firstSeen?: number
+    lastSeen?: number
+    totalRecords: number
+    publicMessages: number
+    privateMessages: number
+    joins: number
+    leaves: number
+    transfersIn: number
+    transfersOut: number
+    players: Record<string, number>
+    typeCounts: Record<string, number>
+}
+
 export interface RecordFilterState {
     q: string
     types: string[]

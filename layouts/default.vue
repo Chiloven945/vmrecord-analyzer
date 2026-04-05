@@ -2,7 +2,8 @@
 const navigation = [
   {label: '总览', to: '/', icon: 'i-lucide-layout-dashboard'},
   {label: '记录', to: '/records', icon: 'i-lucide-scroll-text'},
-  {label: '玩家', to: '/players', icon: 'i-lucide-users'}
+  {label: '玩家', to: '/players', icon: 'i-lucide-users'},
+  {label: '服务器', to: '/servers', icon: 'i-lucide-server'}
 ]
 </script>
 

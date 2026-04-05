@@ -44,7 +44,7 @@ function drop(event: DragEvent) {
 
       <h2 class="mt-5 text-2xl font-semibold text-highlighted">导入 vMessageRecord CSV</h2>
       <p class="mt-3 max-w-2xl text-sm leading-6 text-toned">
-        支持拖拽上传，也支持直接点击下面的上传框选择文件。解析、索引、筛选全部在本地完成，不上传服务器。
+        支持拖拽上传，也支持直接点击下面的上传框选择文件。解析、索引、筛选等操作均在本地完成，不会上传服务器。
       </p>
 
       <div class="mt-6 w-full max-w-2xl rounded-2xl border border-default bg-elevated/60 p-4 text-left">

@@ -1,6 +1,7 @@
 import {useStorage} from '@vueuse/core'
 import {defineStore} from 'pinia'
-import type {NormalizedRecord, PlayerProfile} from '~/types/record'
+import {parseTransferFlow} from '~/utils/recordPresentation'
+import type {NormalizedRecord, PlayerProfile, ServerProfile} from '~/types/record'
 
 function addCount(map: Record<string, number>, key: string) {
     if (!key) return
@@ -83,6 +84,72 @@ export const useRecordsStore = defineStore('records', () => {
         Object.values(playerProfiles.value).sort((a, b) => b.totalRecords - a.totalRecords)
     )
 
+    const serverProfiles = computed<Record<string, ServerProfile>>(() => {
+        const map: Record<string, ServerProfile> = {}
+
+        const touchServer = (name: string, timeMs: number) => {
+            const clean = name.trim()
+            if (!clean) return null
+            const key = clean.toLowerCase()
+
+            if (!map[key]) {
+                map[key] = {
+                    name: clean,
+                    firstSeen: timeMs,
+                    lastSeen: timeMs,
+                    totalRecords: 0,
+                    publicMessages: 0,
+                    privateMessages: 0,
+                    joins: 0,
+                    leaves: 0,
+                    transfersIn: 0,
+                    transfersOut: 0,
+                    players: {},
+                    typeCounts: {}
+                }
+            }
+
+            const profile = map[key]
+            profile.firstSeen = Math.min(profile.firstSeen ?? timeMs, timeMs)
+            profile.lastSeen = Math.max(profile.lastSeen ?? timeMs, timeMs)
+            return profile
+        }
+
+        for (const record of records.value) {
+            const currentServer = touchServer(record.server, record.timeMs)
+            if (currentServer) {
+                currentServer.totalRecords += 1
+                addCount(currentServer.typeCounts, record.type)
+
+                if (record.senderName) addCount(currentServer.players, record.senderName)
+                if (record.receiverName) addCount(currentServer.players, record.receiverName)
+
+                if (record.isPublicChat) currentServer.publicMessages += 1
+                if (record.isPrivate) currentServer.privateMessages += 1
+                if (record.type === 'JOIN') currentServer.joins += 1
+                if (record.type === 'LEAVE') currentServer.leaves += 1
+            }
+
+            if (record.type === 'TRANSFER') {
+                const flow = parseTransferFlow(record)
+                const targetServer = touchServer(flow.to, record.timeMs)
+                if (targetServer) targetServer.transfersIn += 1
+
+                const sourceServer = touchServer(flow.from, record.timeMs)
+                if (sourceServer) {
+                    sourceServer.transfersOut += 1
+                    if (record.senderName) addCount(sourceServer.players, record.senderName)
+                }
+            }
+        }
+
+        return map
+    })
+
+    const servers = computed(() =>
+        Object.values(serverProfiles.value).sort((a, b) => b.totalRecords - a.totalRecords || a.name.localeCompare(b.name))
+    )
+
     const conversationMap = computed<Record<string, NormalizedRecord[]>>(() => {
         const map: Record<string, NormalizedRecord[]> = {}
         for (const record of records.value) {
@@ -148,6 +215,8 @@ export const useRecordsStore = defineStore('records', () => {
         stats,
         players,
         playerProfiles,
+        servers,
+        serverProfiles,
         conversationMap,
         topConversations,
         setRecords,

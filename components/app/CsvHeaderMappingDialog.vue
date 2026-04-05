@@ -74,7 +74,7 @@ function submit() {
           <div>
             <h2 class="text-lg font-semibold text-highlighted">没有检测到表头，请手动匹配字段</h2>
             <p class="mt-1 text-sm text-toned">
-              你的 CSV 第一行看起来不像 header。请选择每个字段对应的是哪一列，至少要映射 <code>type</code> 和 <code>timestamp</code>。
+              无法将 CSV 第一行识别为 header。请匹配对应的字段，并确保至少映射 <code>type</code> 和 <code>timestamp</code>。
             </p>
           </div>
           <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="emit('close')"/>

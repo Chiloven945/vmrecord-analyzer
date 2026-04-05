@@ -88,30 +88,35 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
         <p class="text-sm text-primary">vMessageRecord Chat History Analyzer</p>
         <h1 class="mt-2 text-3xl font-semibold text-highlighted lg:text-4xl">vMessageRecord 聊天记录分析</h1>
         <p class="mt-3 max-w-3xl text-sm leading-6 text-toned">
-          导入由 vMessageRecord 插件生成或导出的 .csv 文件查看你 Velocity 服务器上玩家的聊天记录分析！支持查看总览、玩家画像、双人私聊、单人时间线、记录筛选等。
+          导入由 vMessageRecord 插件生成或导出的 .csv 文件查看你 Velocity
+          服务器上玩家的聊天记录分析！支持查看总览、玩家画像、服务器画像、双人私聊、单人时间线、记录筛选等。
         </p>
       </div>
-      <div class="flex flex-wrap items-center gap-3 text-sm text-toned">
-        <span v-if="store.sourceFileName">当前文件：{{ store.sourceFileName }}</span>
-        <span v-if="store.importedAt">共 {{ store.records.length }} 条</span>
-        <UButton
-            v-if="store.records.length && !showUploader"
-            color="primary"
-            variant="subtle"
-            icon="i-lucide-refresh-cw"
-            @click="replaceFile"
-        >
-          更换文件
-        </UButton>
-        <UButton
-            v-if="store.records.length"
-            color="neutral"
-            variant="outline"
-            icon="i-lucide-trash-2"
-            @click="store.clearRecords()"
-        >
-          清空数据
-        </UButton>
+      <div class="flex flex-col items-start gap-3 text-sm text-toned lg:ml-auto lg:items-end">
+        <div class="flex flex-wrap items-center gap-3 lg:justify-end">
+          <span v-if="store.sourceFileName">当前文件：{{ store.sourceFileName }}</span>
+          <span v-if="store.importedAt">共 {{ store.records.length }} 条</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 lg:justify-end">
+          <UButton
+              v-if="store.records.length && !showUploader"
+              color="primary"
+              variant="subtle"
+              icon="i-lucide-refresh-cw"
+              @click="replaceFile"
+          >
+            更换文件
+          </UButton>
+          <UButton
+              v-if="store.records.length"
+              color="neutral"
+              variant="outline"
+              icon="i-lucide-trash-2"
+              @click="store.clearRecords()"
+          >
+            清空数据
+          </UButton>
+        </div>
       </div>
     </div>
 
@@ -146,6 +151,10 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
 
       <div class="grid gap-6 xl:grid-cols-3">
         <SectionCard title="服务器分布" description="按 server 聚合记录数">
+          <template #actions>
+            <UButton to="/servers" color="neutral" variant="ghost" size="sm" icon="i-lucide-arrow-right">查看全部
+            </UButton>
+          </template>
           <DistributionBars :items="topServers" empty-text="暂无服务器数据"/>
         </SectionCard>
 
