@@ -88,8 +88,8 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
         <p class="text-sm text-primary">vMessageRecord Chat History Analyzer</p>
         <h1 class="mt-2 text-3xl font-semibold text-highlighted lg:text-4xl">vMessageRecord 聊天记录分析</h1>
         <p class="mt-3 max-w-3xl text-sm leading-6 text-toned">
-          导入由 vMessageRecord 插件生成或导出的 .csv 文件查看你 Velocity
-          服务器上玩家的聊天记录分析！支持查看总览、玩家画像、服务器画像、双人私聊、单人时间线、记录筛选等。
+          导入由 vMessageRecord 插件生成或导出的 CSV 文件查看你 Velocity
+          服务器上玩家的聊天记录分析！支持查看总览、玩家档案、服务器档案、双人私聊、单人时间线、记录筛选等。
         </p>
       </div>
       <div class="flex flex-col items-start gap-3 text-sm text-toned lg:ml-auto lg:items-end">

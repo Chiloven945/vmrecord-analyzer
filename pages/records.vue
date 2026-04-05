@@ -74,7 +74,6 @@ const paginatedRecords = computed(() => {
   return filtered.value.slice(start, end)
 })
 
-
 function scrollToTopAnchor() {
   if (!import.meta.client) return
   const top = topAnchor.value
@@ -128,6 +127,29 @@ function closeRecord() {
 
     <template v-else>
       <RecordFilters v-model="filters" :records="store.records"/>
+
+      <div class="flex flex-col gap-3 border-y border-default py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="text-sm text-muted">
+          第 {{ filtered.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
+          {{ Math.min(page * itemsPerPage, filtered.length) }} 条，
+          共 {{ filtered.length }} 条
+        </div>
+
+        <div class="flex items-center gap-3">
+          <UButton color="neutral" variant="ghost" icon="i-lucide-rotate-ccw" @click="reset">
+            重置
+          </UButton>
+
+          <UPagination
+              v-model:page="page"
+              :total="filtered.length"
+              :items-per-page="itemsPerPage"
+              show-edges
+              active-color="primary"
+              active-variant="solid"
+          />
+        </div>
+      </div>
 
       <div class="space-y-3">
         <RecordRow

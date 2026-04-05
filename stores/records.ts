@@ -13,9 +13,11 @@ function addHour(map: Record<number, number>, hour: number) {
 }
 
 export const useRecordsStore = defineStore('records', () => {
-    const records = useStorage<NormalizedRecord[]>('vmrecord-analyzer-records', [])
-    const sourceFileName = useStorage('vmrecord-analyzer-source-file', '')
-    const importedAt = useStorage<number | null>('vmrecord-analyzer-imported-at', null)
+    const session = import.meta.client ? window.sessionStorage : undefined
+
+    const records = useStorage<NormalizedRecord[]>('vmrecord-analyzer-records', [], session)
+    const sourceFileName = useStorage('vmrecord-analyzer-source-file', '', session)
+    const importedAt = useStorage<number | null>('vmrecord-analyzer-imported-at', null, session)
 
     const playerProfiles = computed<Record<string, PlayerProfile>>(() => {
         const map: Record<string, PlayerProfile> = {}

@@ -135,7 +135,6 @@ const paginatedPlayers = computed(() => {
   return filteredPlayers.value.slice(startIndex, startIndex + itemsPerPage)
 })
 
-
 function scrollToTopAnchor() {
   if (!import.meta.client) return
   const top = topAnchor.value
@@ -183,7 +182,7 @@ function clearFilters() {
         color="warning"
         variant="subtle"
         title="还没有导入记录"
-        description="先去总览页导入 CSV，再回来查看玩家画像。"
+        description="请先去总览页导入 CSV 文件后，再回来查看玩家档案。"
     />
 
     <template v-else>
@@ -254,7 +253,7 @@ function clearFilters() {
         </div>
       </UCard>
 
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-3 border-y border-default py-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
         <UPagination
             v-model:page="page"
@@ -268,6 +267,18 @@ function clearFilters() {
 
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <PlayerCard v-for="entry in paginatedPlayers" :key="entry.player.name" :player="entry.player"/>
+      </div>
+
+      <div class="flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
+        <UPagination
+            v-model:page="page"
+            :total="filteredPlayers.length"
+            :items-per-page="itemsPerPage"
+            show-edges
+            active-color="primary"
+            active-variant="solid"
+        />
       </div>
     </template>
   </div>

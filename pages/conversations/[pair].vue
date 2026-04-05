@@ -46,7 +46,6 @@ const paginatedRecords = computed(() => {
   return records.value.slice(start, start + itemsPerPage)
 })
 
-
 function scrollToTopAnchor() {
   if (!import.meta.client) return
   const top = topAnchor.value
@@ -110,6 +109,24 @@ function closeRecord() {
           <div class="text-left text-lg font-semibold text-highlighted">{{ leftDisplay }}</div>
           <div class="text-xs uppercase tracking-[0.2em] text-muted">Sequence</div>
           <div class="text-right text-lg font-semibold text-highlighted">{{ rightDisplay }}</div>
+        </div>
+
+        <div
+            class="mt-4 flex flex-col gap-3 border-b border-default pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div class="text-sm text-muted">
+            第 {{ records.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
+            {{ Math.min(page * itemsPerPage, records.length) }} 条，
+            共 {{ records.length }} 条
+          </div>
+
+          <UPagination
+              v-model:page="page"
+              :total="records.length"
+              :items-per-page="itemsPerPage"
+              show-edges
+              active-color="primary"
+              active-variant="solid"
+          />
         </div>
 
         <div class="relative mt-6 space-y-4">

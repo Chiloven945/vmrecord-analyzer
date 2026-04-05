@@ -22,7 +22,7 @@ const servers = computed(() => store.servers)
         color="warning"
         variant="subtle"
         title="还没有导入记录"
-        description="先回到总览页导入一个 vMessageRecord CSV 文件。"
+        description="请先回到总览页导入一个 vMessageRecord CSV 文件。"
     />
 
     <div v-else class="space-y-3">
