@@ -20,7 +20,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.101",
     "@types/papaparse": "^5.3.16",
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.2"
   },
   "packageManager": "pnpm@10.5.2"
 }
