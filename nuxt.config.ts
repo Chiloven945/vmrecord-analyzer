@@ -3,6 +3,15 @@ export default defineNuxtConfig({
     devtools: {enabled: true},
     modules: ['@nuxt/ui', '@pinia/nuxt'],
     css: ['~/assets/css/main.css'],
+    ui: {
+        fonts: false
+    },
+    components: [
+        {
+            path: '~/components',
+            pathPrefix: false
+        }
+    ],
     app: {
         head: {
             title: 'vmrecord-analyzer',

@@ -17,7 +17,7 @@ const navigation = [
               <UIcon name="i-lucide-radio-tower" class="size-5"/>
             </div>
             <div>
-              <p class="text-sm text-muted">Nuxt UI 4</p>
+              <p class="text-sm text-muted">vMessageRecord</p>
               <h1 class="text-lg font-semibold text-highlighted">vmrecord-analyzer</h1>
             </div>
           </div>
@@ -37,7 +37,7 @@ const navigation = [
 
           <div class="mt-8 rounded-2xl border border-default bg-elevated/70 p-4 text-sm text-muted">
             <p class="font-medium text-highlighted">数据只在浏览器内分析</p>
-            <p class="mt-2 leading-6">适合导入 vMessageRecord 的 CSV 导出文件，本地完成解析与索引。</p>
+            <p class="mt-2 leading-6">导入 vMessageRecord 的 CSV 导出文件，本地完成解析与索引。</p>
           </div>
         </div>
       </aside>

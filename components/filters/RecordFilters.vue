@@ -23,11 +23,6 @@ const playerOptions = computed(() => {
   return [...names].sort()
 })
 
-function setMulti(event: Event, key: 'types' | 'servers' | 'players') {
-  const target = event.target as HTMLSelectElement
-  model.value[key] = Array.from(target.selectedOptions).map((option) => option.value)
-}
-
 function clear() {
   model.value.q = ''
   model.value.types = []
@@ -48,41 +43,27 @@ function clear() {
         <UInput v-model="model.q" icon="i-lucide-search" placeholder="消息 / 玩家 / UUID / 指令 / 服务器" size="lg"/>
       </div>
 
-      <div>
-        <label class="mb-2 block text-xs font-medium text-muted">类型</label>
-        <select
-            class="w-full rounded-[calc(var(--ui-radius)*0.9)] border border-default bg-default px-3 py-2.5 text-sm text-highlighted outline-none"
-            multiple
-            :value="model.types"
-            @change="setMulti($event, 'types')"
-        >
-          <option v-for="item in typeOptions" :key="item" :value="item">{{ item }}</option>
-        </select>
-      </div>
+      <MultiSelectDropdown
+          v-model="model.types"
+          label="类型"
+          :options="typeOptions"
+          placeholder="全部类型"
+      />
 
-      <div>
-        <label class="mb-2 block text-xs font-medium text-muted">服务器</label>
-        <select
-            class="w-full rounded-[calc(var(--ui-radius)*0.9)] border border-default bg-default px-3 py-2.5 text-sm text-highlighted outline-none"
-            multiple
-            :value="model.servers"
-            @change="setMulti($event, 'servers')"
-        >
-          <option v-for="item in serverOptions" :key="item" :value="item">{{ item }}</option>
-        </select>
-      </div>
+      <MultiSelectDropdown
+          v-model="model.servers"
+          label="服务器"
+          :options="serverOptions"
+          placeholder="全部服务器"
+      />
 
-      <div>
-        <label class="mb-2 block text-xs font-medium text-muted">玩家</label>
-        <select
-            class="w-full rounded-[calc(var(--ui-radius)*0.9)] border border-default bg-default px-3 py-2.5 text-sm text-highlighted outline-none"
-            multiple
-            :value="model.players"
-            @change="setMulti($event, 'players')"
-        >
-          <option v-for="item in playerOptions" :key="item" :value="item">{{ item }}</option>
-        </select>
-      </div>
+      <MultiSelectDropdown
+          v-model="model.players"
+          label="玩家"
+          :options="playerOptions"
+          placeholder="全部玩家"
+          searchable
+      />
 
       <div>
         <label class="mb-2 block text-xs font-medium text-muted">开始日期</label>

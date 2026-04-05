@@ -6,6 +6,21 @@ export type RecordType =
     | 'TRANSFER'
     | string
 
+export type KnownCsvField =
+    | 'type'
+    | 'timestamp'
+    | 'server'
+    | 'sender_name'
+    | 'receiver_name'
+    | 'message'
+    | 'sender_uuid'
+    | 'sender_prefix'
+    | 'sender_suffix'
+    | 'receiver_uuid'
+    | 'receiver_prefix'
+    | 'receiver_suffix'
+    | 'command'
+
 export interface RawCsvRow {
     type?: string
     timestamp?: string
