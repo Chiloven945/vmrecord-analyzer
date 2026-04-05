@@ -1,5 +1,5 @@
-import Papa from 'papaparse'
 import type {RawCsvRow} from '~/types/record'
+import type PapaType from 'papaparse'
 
 export const CSV_FIELD_OPTIONS = [
     'type',
@@ -29,7 +29,31 @@ export interface CsvInspection {
     totalRows: number
 }
 
-function parseArrayRows(text: string): Promise<string[][]> {
+async function getPapa(): Promise<typeof PapaType> {
+    if (import.meta.server) {
+        throw new Error('CSV parsing is only available on the client side.')
+    }
+
+    const mod = await import('papaparse')
+    return mod.default
+}
+
+function normalizeHeaderName(value: string) {
+    return value.trim().toLowerCase()
+}
+
+function guessHasHeader(firstRow: string[]) {
+    const normalized = firstRow.map(normalizeHeaderName)
+    const knownHeaders = new Set<string>(CSV_FIELD_OPTIONS)
+    const matched = normalized.filter((value) => knownHeaders.has(value))
+    const requiredMatched = REQUIRED_CSV_FIELDS.filter((value) => normalized.includes(value))
+
+    return requiredMatched.length === REQUIRED_CSV_FIELDS.length || matched.length >= 3
+}
+
+async function parseArrayRows(text: string): Promise<string[][]> {
+    const Papa = await getPapa()
+
     return new Promise((resolve, reject) => {
         Papa.parse<string[]>(text, {
             header: false,
@@ -50,19 +74,6 @@ function parseArrayRows(text: string): Promise<string[][]> {
             error: reject
         })
     })
-}
-
-function normalizeHeaderName(value: string) {
-    return value.trim().toLowerCase()
-}
-
-function guessHasHeader(firstRow: string[]) {
-    const normalized = firstRow.map(normalizeHeaderName)
-    const knownHeaders = new Set<string>(CSV_FIELD_OPTIONS)
-    const matched = normalized.filter((value) => knownHeaders.has(value))
-    const requiredMatched = REQUIRED_CSV_FIELDS.filter((value) => normalized.includes(value))
-
-    return requiredMatched.length === REQUIRED_CSV_FIELDS.length || matched.length >= 3
 }
 
 export async function inspectCsvText(text: string): Promise<CsvInspection> {
@@ -96,6 +107,8 @@ export async function parseCsvText(text: string, mapping?: CsvHeaderMapping): Pr
         const rows = await parseArrayRows(text)
         return buildRowsFromMapping(rows, mapping)
     }
+
+    const Papa = await getPapa()
 
     return new Promise((resolve, reject) => {
         Papa.parse<RawCsvRow>(text, {
