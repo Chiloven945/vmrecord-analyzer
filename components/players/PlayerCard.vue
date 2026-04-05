@@ -17,7 +17,7 @@ const dominantServer = computed(() =>
       <div class="flex items-start justify-between gap-4">
         <div class="min-w-0">
           <h3 class="truncate text-lg font-semibold text-highlighted">{{ player.name }}</h3>
-          <p class="mt-1 truncate text-xs text-muted">{{ player.uuid || 'No UUID' }}</p>
+          <p class="mt-1 text-xs text-muted">共 {{ player.totalRecords }} 条活动</p>
         </div>
         <UBadge color="neutral" variant="subtle">{{ player.totalRecords }}</UBadge>
       </div>

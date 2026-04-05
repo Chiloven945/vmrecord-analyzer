@@ -1,84 +1,103 @@
 <script setup lang="ts">
 import type {NormalizedRecord} from '~/types/record'
+import {getPrivateMessageServers, getRecordBadgeColor, parseTransferFlow} from '~/utils/recordPresentation'
+import {useRecordsStore} from '~/stores/records'
 
 const props = defineProps<{
   record: NormalizedRecord
   keyword?: string
 }>()
 
-function badgeColor(type: string) {
-  switch (type) {
-    case 'CHAT':
-      return 'info'
-    case 'PRIVATE_MESSAGE':
-      return 'secondary'
-    case 'JOIN':
-      return 'success'
-    case 'LEAVE':
-      return 'error'
-    case 'TRANSFER':
-      return 'warning'
-    default:
-      return 'neutral'
-  }
+const emit = defineEmits<{
+  select: [record: NormalizedRecord]
+}>()
+
+const store = useRecordsStore()
+
+const transferFlow = computed(() => parseTransferFlow(props.record))
+const privateServers = computed(() => getPrivateMessageServers(store.records, props.record))
+
+function openDetail() {
+  emit('select', props.record)
 }
 
-const detailText = computed(() => {
-  if (props.record.message) return props.record.message
-  if (props.record.command) return props.record.command
-  return '-'
-})
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    openDetail()
+  }
+}
 </script>
 
 <template>
-  <UCard>
-    <div class="grid gap-4 lg:grid-cols-[190px_1fr]">
+  <UCard
+      class="cursor-pointer transition hover:-translate-y-0.5 hover:ring-1 hover:ring-primary/20"
+      tabindex="0"
+      @click="openDetail"
+      @keydown="onKeydown"
+  >
+    <div class="grid gap-4 lg:grid-cols-[180px_1fr]">
       <div class="space-y-2">
         <p class="text-sm font-medium text-highlighted">{{ record.timestamp }}</p>
-        <UBadge :color="badgeColor(record.type)" variant="subtle">
+        <UBadge :color="getRecordBadgeColor(record.type)" variant="subtle">
           {{ record.type }}
         </UBadge>
-        <div class="text-xs text-toned">
-          <p>server: {{ record.server || 'Unknown' }}</p>
-          <p v-if="record.command">cmd: {{ record.command }}</p>
-        </div>
       </div>
 
-      <div class="min-w-0">
-        <div class="flex flex-wrap items-center gap-2 text-sm text-toned">
-          <PrefixSuffix :text="record.senderPrefix"/>
-          <NuxtLink :to="`/players/${encodeURIComponent(record.senderName)}`"
-                    class="font-semibold text-highlighted hover:text-primary">
-            {{ record.senderName || 'Unknown' }}
-          </NuxtLink>
-          <PrefixSuffix :text="record.senderSuffix"/>
+      <div class="min-w-0 space-y-3">
+        <template v-if="record.type === 'JOIN'">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-base font-semibold text-highlighted">{{ record.senderName || 'Unknown' }}</span>
+            <span class="text-sm text-toned">加入了</span>
+            <UBadge color="success" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+          </div>
+        </template>
 
-          <template v-if="record.receiverName">
-            <UIcon name="i-lucide-arrow-right" class="size-4 text-muted"/>
-            <PrefixSuffix :text="record.receiverPrefix"/>
-            <NuxtLink :to="`/players/${encodeURIComponent(record.receiverName)}`"
-                      class="font-semibold text-highlighted hover:text-primary">
-              {{ record.receiverName }}
-            </NuxtLink>
-            <PrefixSuffix :text="record.receiverSuffix"/>
-          </template>
-        </div>
+        <template v-else-if="record.type === 'LEAVE'">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-base font-semibold text-highlighted">{{ record.senderName || 'Unknown' }}</span>
+            <span class="text-sm text-toned">离开了</span>
+            <UBadge color="error" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+          </div>
+        </template>
 
-        <div class="mt-3 text-sm leading-6 text-highlighted">
-          <MessageHighlighter :text="detailText" :keyword="keyword || ''"/>
-        </div>
+        <template v-else-if="record.type === 'TRANSFER'">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-base font-semibold text-highlighted">{{ record.senderName || 'Unknown' }}</span>
+            <div
+                class="flex flex-wrap items-center gap-2 rounded-xl border border-default bg-elevated px-3 py-2 text-sm">
+              <UBadge color="info" variant="soft">{{ transferFlow.from }}</UBadge>
+              <UIcon name="i-lucide-arrow-right" class="size-4 text-primary"/>
+              <UBadge color="warning" variant="soft">{{ transferFlow.to }}</UBadge>
+            </div>
+          </div>
+        </template>
 
-        <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
-          <span v-if="record.senderUuid">sender_uuid: {{ record.senderUuid }}</span>
-          <span v-if="record.receiverUuid">receiver_uuid: {{ record.receiverUuid }}</span>
-          <NuxtLink
-              v-if="record.conversationKey"
-              :to="`/conversations/${encodeURIComponent(record.conversationKey)}`"
-              class="text-primary hover:underline"
-          >
-            查看双人会话
-          </NuxtLink>
-        </div>
+        <template v-else-if="record.type === 'PRIVATE_MESSAGE'">
+          <div class="flex flex-wrap items-center gap-2 text-sm text-toned">
+            <UBadge color="info" variant="soft">{{ privateServers.senderServer }}</UBadge>
+            <span class="font-semibold text-highlighted">{{ record.senderName || 'Unknown' }}</span>
+            <UIcon name="i-lucide-arrow-right" class="size-4 text-primary"/>
+            <UBadge color="secondary" variant="soft">{{ privateServers.receiverServer }}</UBadge>
+            <span class="font-semibold text-highlighted">{{ record.receiverName || 'Unknown' }}</span>
+          </div>
+
+          <div class="text-sm leading-6 text-highlighted">
+            <MessageHighlighter :text="record.message || '-'" :keyword="keyword || ''"/>
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="flex flex-wrap items-center gap-2 text-sm text-toned">
+            <span class="text-base font-semibold text-highlighted">{{ record.senderName || 'Unknown' }}</span>
+            <span class="text-muted">·</span>
+            <UBadge color="info" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+          </div>
+
+          <div class="text-sm leading-6 text-highlighted">
+            <MessageHighlighter :text="record.message || '-'" :keyword="keyword || ''"/>
+          </div>
+        </template>
       </div>
     </div>
   </UCard>

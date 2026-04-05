@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type {NormalizedRecord} from '~/types/record'
 import {useRecordsStore} from '~/stores/records'
 import {useRecordFilters} from '~/composables/useRecordFilters'
 
@@ -7,6 +8,7 @@ const {filters, filtered, reset} = useRecordFilters(computed(() => store.records
 
 const page = ref(1)
 const itemsPerPage = 50
+const selectedRecord = ref<NormalizedRecord | null>(null)
 
 const paginatedRecords = computed(() => {
   const start = (page.value - 1) * itemsPerPage
@@ -17,6 +19,14 @@ const paginatedRecords = computed(() => {
 watch(filtered, () => {
   page.value = 1
 })
+
+function openRecord(record: NormalizedRecord) {
+  selectedRecord.value = record
+}
+
+function closeRecord() {
+  selectedRecord.value = null
+}
 </script>
 
 <template>
@@ -43,7 +53,13 @@ watch(filtered, () => {
       <RecordFilters v-model="filters" :records="store.records"/>
 
       <div class="space-y-3">
-        <RecordRow v-for="record in paginatedRecords" :key="record.id" :record="record" :keyword="filters.q"/>
+        <RecordRow
+            v-for="record in paginatedRecords"
+            :key="record.id"
+            :record="record"
+            :keyword="filters.q"
+            @select="openRecord"
+        />
       </div>
 
       <div class="flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -69,5 +85,7 @@ watch(filtered, () => {
         </div>
       </div>
     </template>
+
+    <RecordDetailDialog :open="!!selectedRecord" :record="selectedRecord" @close="closeRecord"/>
   </div>
 </template>

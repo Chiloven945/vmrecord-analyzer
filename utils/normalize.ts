@@ -10,6 +10,21 @@ function makeConversationKey(a: string, b: string) {
     return names[0] && names[1] ? `${names[0]}::${names[1]}` : null
 }
 
+function parseTransferMessage(message: string, fallbackServer: string) {
+    const match = message.match(/^\s*(.*?)\s*->\s*(.*?)\s*$/)
+    if (match) {
+        return {
+            transferSource: match[1] || undefined,
+            transferTarget: match[2] || fallbackServer || undefined
+        }
+    }
+
+    return {
+        transferSource: undefined,
+        transferTarget: fallbackServer || undefined
+    }
+}
+
 export function normalizeRow(row: RawCsvRow, index: number): NormalizedRecord {
     const timestamp = safe(row.timestamp)
     const parsed = dayjs(timestamp, 'YYYY-MM-DD HH:mm:ss')
@@ -18,6 +33,7 @@ export function normalizeRow(row: RawCsvRow, index: number): NormalizedRecord {
     const senderName = safe(row.sender_name)
     const receiverName = safe(row.receiver_name)
     const message = row.message ?? ''
+    const server = safe(row.server)
 
     const isPrivate = type === 'PRIVATE_MESSAGE'
     const isPublicChat = type === 'CHAT'
@@ -27,6 +43,11 @@ export function normalizeRow(row: RawCsvRow, index: number): NormalizedRecord {
         ? makeConversationKey(senderName, receiverName)
         : null
 
+    const transfer = isTransfer ? parseTransferMessage(message, server) : {
+        transferSource: undefined,
+        transferTarget: undefined
+    }
+
     return {
         id: `${timestamp}-${type}-${senderName || 'unknown'}-${receiverName || 'none'}-${index}`,
         type,
@@ -35,7 +56,7 @@ export function normalizeRow(row: RawCsvRow, index: number): NormalizedRecord {
         date: dayjs(timeMs).format('YYYY-MM-DD'),
         hour: dayjs(timeMs).hour(),
         minuteBucket: dayjs(timeMs).format('YYYY-MM-DD HH:mm'),
-        server: safe(row.server),
+        server,
         senderName,
         senderUuid: safe(row.sender_uuid),
         senderPrefix: row.sender_prefix ?? '',
@@ -53,7 +74,9 @@ export function normalizeRow(row: RawCsvRow, index: number): NormalizedRecord {
         primaryPlayer: senderName || receiverName,
         secondaryPlayer: receiverName,
         participants: [senderName, receiverName].filter(Boolean),
-        conversationKey
+        conversationKey,
+        transferSource: transfer.transferSource,
+        transferTarget: transfer.transferTarget
     }
 }
 

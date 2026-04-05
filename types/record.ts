@@ -74,6 +74,8 @@ export interface NormalizedRecord {
     secondaryPlayer: string
     participants: string[]
     conversationKey: string | null
+    transferSource?: string
+    transferTarget?: string
 }
 
 export interface PlayerProfile {

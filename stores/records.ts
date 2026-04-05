@@ -120,7 +120,12 @@ export const useRecordsStore = defineStore('records', () => {
 
     const topConversations = computed(() => {
         return Object.entries(conversationMap.value)
-            .map(([key, list]) => ({key, count: list.length, latest: list[list.length - 1]?.timeMs ?? 0}))
+            .map(([key, list]) => ({
+                key,
+                label: list[0] ? `${list[0].senderName} ↔ ${list[0].receiverName}` : key.replace('::', ' ↔ '),
+                count: list.length,
+                latest: list[list.length - 1]?.timeMs ?? 0
+            }))
             .sort((a, b) => b.count - a.count || b.latest - a.latest)
     })
 

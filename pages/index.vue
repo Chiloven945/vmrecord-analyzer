@@ -2,6 +2,7 @@
 import {useRecordsStore} from '~/stores/records'
 import {type PreparedCsvImport, useCsvImport} from '~/composables/useCsvImport'
 import type {CsvHeaderMapping} from '~/utils/csv'
+import type {NormalizedRecord} from '~/types/record'
 
 const store = useRecordsStore()
 const {loading, error, prepareFile, importPrepared} = useCsvImport()
@@ -9,6 +10,7 @@ const {loading, error, prepareFile, importPrepared} = useCsvImport()
 const showUploader = ref(store.records.length === 0)
 const mappingDialogOpen = ref(false)
 const pendingPrepared = ref<PreparedCsvImport | null>(null)
+const selectedRecord = ref<NormalizedRecord | null>(null)
 
 watch(
     () => store.records.length,
@@ -53,6 +55,14 @@ function replaceFile() {
   pendingPrepared.value = null
   mappingDialogOpen.value = false
   showUploader.value = true
+}
+
+function openRecord(record: NormalizedRecord) {
+  selectedRecord.value = record
+}
+
+function closeRecord() {
+  selectedRecord.value = null
 }
 
 const topServers = computed(() =>
@@ -151,7 +161,7 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
                 :to="`/conversations/${encodeURIComponent(item.key)}`"
                 class="flex items-center justify-between gap-4 rounded-xl border border-default bg-elevated px-3 py-2.5 text-sm hover:ring-1 hover:ring-primary/15"
             >
-              <span class="truncate text-highlighted">{{ item.key.replace('::', ' ↔ ') }}</span>
+              <span class="truncate text-highlighted">{{ item.label }}</span>
               <UBadge color="secondary" variant="subtle">{{ item.count }}</UBadge>
             </NuxtLink>
           </div>
@@ -161,9 +171,11 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
 
       <SectionCard title="最近记录" description="按时间倒序展示最近 10 条">
         <div class="space-y-3">
-          <RecordRow v-for="record in latestRecords" :key="record.id" :record="record"/>
+          <RecordRow v-for="record in latestRecords" :key="record.id" :record="record" @select="openRecord"/>
         </div>
       </SectionCard>
     </template>
+
+    <RecordDetailDialog :open="!!selectedRecord" :record="selectedRecord" @close="closeRecord"/>
   </div>
 </template>

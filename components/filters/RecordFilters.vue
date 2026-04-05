@@ -84,7 +84,7 @@ function clear() {
             v-model="localQuery"
             icon="i-lucide-search"
             size="lg"
-            placeholder="消息 / 玩家 / UUID / 指令 / 服务器"
+            placeholder="消息 / 玩家 / 指令 / 服务器"
             @keydown.enter="applySearch"
         />
 

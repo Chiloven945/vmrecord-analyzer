@@ -41,8 +41,8 @@ export function useRecordFilters(source: Ref<NormalizedRecord[]>) {
                     r.receiverName,
                     r.message,
                     r.command,
-                    r.senderUuid,
-                    r.receiverUuid
+                    r.transferSource,
+                    r.transferTarget
                 ].join(' ').toLowerCase()
 
                 if (!haystack.includes(q)) return false
