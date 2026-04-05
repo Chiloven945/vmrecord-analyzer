@@ -68,7 +68,7 @@ const typeDistribution = computed(() =>
         .sort((a, b) => b.value - a.value)
 )
 
-const latestRecords = computed(() => store.records.slice(-6).reverse())
+const latestRecords = computed(() => store.records.slice(-10).reverse())
 </script>
 
 <template>
@@ -159,7 +159,7 @@ const latestRecords = computed(() => store.records.slice(-6).reverse())
         </SectionCard>
       </div>
 
-      <SectionCard title="最近记录" description="按时间倒序展示最近 6 条">
+      <SectionCard title="最近记录" description="按时间倒序展示最近 10 条">
         <div class="space-y-3">
           <RecordRow v-for="record in latestRecords" :key="record.id" :record="record"/>
         </div>

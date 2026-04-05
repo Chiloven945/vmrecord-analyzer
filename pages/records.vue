@@ -4,12 +4,18 @@ import {useRecordFilters} from '~/composables/useRecordFilters'
 
 const store = useRecordsStore()
 const {filters, filtered, reset} = useRecordFilters(computed(() => store.records))
-const visibleCount = ref(100)
 
-const visibleRecords = computed(() => filtered.value.slice(0, visibleCount.value))
+const page = ref(1)
+const itemsPerPage = 50
+
+const paginatedRecords = computed(() => {
+  const start = (page.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filtered.value.slice(start, end)
+})
 
 watch(filtered, () => {
-  visibleCount.value = 100
+  page.value = 1
 })
 </script>
 
@@ -21,7 +27,6 @@ watch(filtered, () => {
         <p class="mt-2 text-sm text-toned">当前显示 {{ filtered.length }} / {{ store.records.length }} 条记录</p>
       </div>
       <div class="flex gap-3">
-        <UButton color="neutral" variant="outline" icon="i-lucide-rotate-ccw" @click="reset">重置</UButton>
         <UButton to="/" color="primary" variant="soft" icon="i-lucide-upload">重新导入</UButton>
       </div>
     </div>
@@ -38,13 +43,30 @@ watch(filtered, () => {
       <RecordFilters v-model="filters" :records="store.records"/>
 
       <div class="space-y-3">
-        <RecordRow v-for="record in visibleRecords" :key="record.id" :record="record" :keyword="filters.q"/>
+        <RecordRow v-for="record in paginatedRecords" :key="record.id" :record="record" :keyword="filters.q"/>
       </div>
 
-      <div v-if="visibleRecords.length < filtered.length" class="flex justify-center">
-        <UButton color="neutral" variant="outline" icon="i-lucide-chevrons-down" @click="visibleCount += 100">
-          加载更多 ({{ visibleRecords.length }}/{{ filtered.length }})
-        </UButton>
+      <div class="flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="text-sm text-muted">
+          第 {{ filtered.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
+          {{ Math.min(page * itemsPerPage, filtered.length) }} 条，
+          共 {{ filtered.length }} 条
+        </div>
+
+        <div class="flex items-center gap-3">
+          <UButton color="neutral" variant="ghost" icon="i-lucide-rotate-ccw" @click="reset">
+            重置
+          </UButton>
+
+          <UPagination
+              v-model:page="page"
+              :total="filtered.length"
+              :items-per-page="itemsPerPage"
+              show-edges
+              active-color="primary"
+              active-variant="solid"
+          />
+        </div>
       </div>
     </template>
   </div>

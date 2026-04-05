@@ -21,6 +21,14 @@ export type KnownCsvField =
     | 'receiver_suffix'
     | 'command'
 
+export type RecordSortMode =
+    | 'time-desc'
+    | 'time-asc'
+    | 'player-asc'
+    | 'player-desc'
+    | 'server-asc'
+    | 'server-desc'
+
 export interface RawCsvRow {
     type?: string
     timestamp?: string
@@ -94,6 +102,5 @@ export interface RecordFilterState {
     players: string[]
     start?: string
     end?: string
-    onlyPrivate: boolean
-    onlyPublic: boolean
+    sort: RecordSortMode
 }
