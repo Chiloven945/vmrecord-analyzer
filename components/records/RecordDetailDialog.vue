@@ -31,9 +31,14 @@ function serverLink(name: string) {
 </script>
 
 <template>
-  <UModal :open="open"
-          :ui="{ overlay: 'bg-black/35 backdrop-blur-[2px]', content: 'sm:max-w-4xl max-h-[90vh] overflow-y-auto' }"
-          @update:open="value => { if (!value) emit('close') }">
+  <UModal
+      :open="open"
+      :ui="{
+        overlay: 'bg-black/35 backdrop-blur-[2px]',
+        content: 'bg-(--ui-bg)/90 backdrop-blur-[4px] sm:max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl'
+    }"
+      @update:open="value => { if (!value) emit('close') }"
+  >
     <template #content>
       <div v-if="record" class="p-4 sm:p-6">
         <div class="mb-5 flex items-start justify-between gap-4">
