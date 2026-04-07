@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.101",
+    "@nuxtjs/i18n": "^10.2.4",
     "@types/papaparse": "^5.3.16",
     "typescript": "^6.0.2"
   },

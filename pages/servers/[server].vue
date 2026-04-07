@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import type {NormalizedRecord} from '~/types/record'
 import {useRecordsStore} from '~/stores/records'
 
+const {t} = useI18n()
+const {formatDateTime, formatNumber} = useLocaleFormatting()
 const route = useRoute()
 const store = useRecordsStore()
 const serverName = computed(() => decodeURIComponent(String(route.params.server || '')))
@@ -39,14 +40,17 @@ function closeRecord() {
 
 <template>
   <div class="space-y-6">
-    <UButton to="/servers" color="neutral" variant="ghost" icon="i-lucide-arrow-left">返回服务器列表</UButton>
+    <UButton to="/servers" color="neutral" variant="ghost" icon="i-lucide-arrow-left">{{
+        t('server.backToList')
+      }}
+    </UButton>
 
     <UAlert
         v-if="!profile"
         color="warning"
         variant="subtle"
-        title="未找到该服务器"
-        description="请确认服务器名称是否正确，或者先导入包含该服务器记录的 CSV。"
+        :title="t('server.notFoundTitle')"
+        :description="t('server.notFoundDescription')"
     />
 
     <template v-else>
@@ -55,45 +59,46 @@ function closeRecord() {
           <div class="space-y-5">
             <div>
               <h1 class="text-2xl font-semibold text-highlighted">{{ profile.name }}</h1>
-              <p class="mt-2 text-sm text-toned">活跃玩家 {{ Object.keys(profile.players).length }} 人</p>
+              <p class="mt-2 text-sm text-toned">
+                {{ t('server.activePeopleCount', {count: formatNumber(Object.keys(profile.players).length)}) }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-sm">
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">总记录</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.totalRecords }}</div>
+                <div class="text-muted">{{ t('stats.totalRecords') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.totalRecords) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">消息数</div>
+                <div class="text-muted">{{ t('server.messageCount') }}</div>
                 <div class="mt-1 text-xl font-semibold text-highlighted">
-                  {{ profile.publicMessages + profile.privateMessages }}
+                  {{ formatNumber(profile.publicMessages + profile.privateMessages) }}
                 </div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">加入</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.joins }}</div>
+                <div class="text-muted">{{ t('server.join') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.joins) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">离开</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.leaves }}</div>
+                <div class="text-muted">{{ t('server.leave') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.leaves) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">跨服进入</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.transfersIn }}</div>
+                <div class="text-muted">{{ t('server.transferIn') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.transfersIn) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">跨服离开</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.transfersOut }}</div>
+                <div class="text-muted">{{ t('server.transferOut') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.transfersOut) }}</div>
               </div>
             </div>
 
             <div class="space-y-1 text-sm text-toned">
-              <p>首次活动：{{ profile.firstSeen ? dayjs(profile.firstSeen).format('YYYY-MM-DD HH:mm:ss') : '-' }}</p>
-              <p>最后活动：{{ profile.lastSeen ? dayjs(profile.lastSeen).format('YYYY-MM-DD HH:mm:ss') : '-' }}</p>
+              <p>{{ t('server.firstActivity') }}：{{ formatDateTime(profile.firstSeen) }}</p>
+              <p>{{ t('server.lastActivity') }}：{{ formatDateTime(profile.lastSeen) }}</p>
             </div>
 
             <div>
-              <h2 class="text-sm font-medium text-highlighted">活跃玩家</h2>
+              <h2 class="text-sm font-medium text-highlighted">{{ t('server.activePlayers') }}</h2>
               <div class="mt-3 space-y-2">
                 <NuxtLink
                     v-for="[name, count] in topPlayers"
@@ -102,16 +107,16 @@ function closeRecord() {
                     class="flex items-center justify-between rounded-xl border border-default bg-elevated px-3 py-2 text-sm hover:ring-1 hover:ring-primary/15"
                 >
                   <span class="text-highlighted">{{ name }}</span>
-                  <UBadge color="secondary" variant="subtle">{{ count }}</UBadge>
+                  <UBadge color="secondary" variant="subtle">{{ formatNumber(count) }}</UBadge>
                 </NuxtLink>
-                <div v-if="!topPlayers.length" class="text-sm text-muted">暂无玩家活动</div>
+                <div v-if="!topPlayers.length" class="text-sm text-muted">{{ t('server.noPlayerActivity') }}</div>
               </div>
             </div>
           </div>
         </UCard>
 
         <div class="space-y-3">
-          <h2 class="text-xl font-semibold text-highlighted">最近活动</h2>
+          <h2 class="text-xl font-semibold text-highlighted">{{ t('server.recentActivity') }}</h2>
           <RecordRow
               v-for="record in recentRecords"
               :key="record.id"

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import type {NormalizedRecord} from '~/types/record'
 import {usePlayerProfile} from '~/composables/usePlayerProfile'
 
+const {t} = useI18n()
+const {formatDateTime, formatNumber} = useLocaleFormatting()
 const route = useRoute()
 const playerName = computed(() => decodeURIComponent(String(route.params.player || '')))
 const {profile, records, privateContacts} = usePlayerProfile(playerName)
 
 const dominantServer = computed(() =>
-    Object.entries(profile.value?.servers || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Unknown'
+    Object.entries(profile.value?.servers || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || t('common.unknown')
 )
 
 const selectedRecord = ref<NormalizedRecord | null>(null)
@@ -25,14 +26,17 @@ function closeRecord() {
 
 <template>
   <div class="space-y-6">
-    <UButton to="/players" color="neutral" variant="ghost" icon="i-lucide-arrow-left">返回玩家列表</UButton>
+    <UButton to="/players" color="neutral" variant="ghost" icon="i-lucide-arrow-left">{{
+        t('player.backToList')
+      }}
+    </UButton>
 
     <UAlert
         v-if="!profile"
         color="warning"
         variant="subtle"
-        title="未找到该玩家"
-        description="请确认玩家名称是否正确，或者先导入包含该玩家记录的 CSV。"
+        :title="t('player.notFoundTitle')"
+        :description="t('player.notFoundDescription')"
     />
 
     <template v-else>
@@ -41,35 +45,43 @@ function closeRecord() {
           <div class="space-y-5">
             <div>
               <h1 class="text-2xl font-semibold text-highlighted">{{ profile.name }}</h1>
-              <p class="mt-2 text-sm text-toned">常驻服务器：{{ dominantServer }}</p>
+              <p class="mt-2 text-sm text-toned">{{ t('player.dominantServer', {server: dominantServer}) }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-sm">
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">总记录</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.totalRecords }}</div>
+                <div class="text-muted">{{ t('stats.totalRecords') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatNumber(profile.totalRecords) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">公聊</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.publicMessages }}</div>
+                <div class="text-muted">{{ t('player.publicChat') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{
+                    formatNumber(profile.publicMessages)
+                  }}
+                </div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">私聊发送</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.privateMessagesSent }}</div>
+                <div class="text-muted">{{ t('player.privateSent') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{
+                    formatNumber(profile.privateMessagesSent)
+                  }}
+                </div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">私聊接收</div>
-                <div class="mt-1 text-xl font-semibold text-highlighted">{{ profile.privateMessagesReceived }}</div>
+                <div class="text-muted">{{ t('player.privateReceived') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">
+                  {{ formatNumber(profile.privateMessagesReceived) }}
+                </div>
               </div>
             </div>
 
             <div class="space-y-1 text-sm text-toned">
-              <p>首次出现：{{ profile.firstSeen ? dayjs(profile.firstSeen).format('YYYY-MM-DD HH:mm:ss') : '-' }}</p>
-              <p>最后出现：{{ profile.lastSeen ? dayjs(profile.lastSeen).format('YYYY-MM-DD HH:mm:ss') : '-' }}</p>
+              <p>{{ t('player.firstSeen') }}：{{ formatDateTime(profile.firstSeen) }}</p>
+              <p>{{ t('player.lastSeen') }}：{{ formatDateTime(profile.lastSeen) }}</p>
             </div>
 
             <div>
-              <h2 class="text-sm font-medium text-highlighted">常联系对象</h2>
+              <h2 class="text-sm font-medium text-highlighted">{{ t('player.frequentContacts') }}</h2>
               <div class="mt-3 space-y-2">
                 <NuxtLink
                     v-for="[name, count] in privateContacts.slice(0, 8)"
@@ -78,16 +90,16 @@ function closeRecord() {
                     class="flex items-center justify-between rounded-xl border border-default bg-elevated px-3 py-2 text-sm hover:ring-1 hover:ring-primary/15"
                 >
                   <span class="text-highlighted">{{ name }}</span>
-                  <UBadge color="secondary" variant="subtle">{{ count }}</UBadge>
+                  <UBadge color="secondary" variant="subtle">{{ formatNumber(count) }}</UBadge>
                 </NuxtLink>
-                <div v-if="!privateContacts.length" class="text-sm text-muted">暂无私聊联系人</div>
+                <div v-if="!privateContacts.length" class="text-sm text-muted">{{ t('player.noContacts') }}</div>
               </div>
             </div>
           </div>
         </UCard>
 
         <div class="space-y-3">
-          <h2 class="text-xl font-semibold text-highlighted">最近活动</h2>
+          <h2 class="text-xl font-semibold text-highlighted">{{ t('player.recentActivity') }}</h2>
           <RecordRow
               v-for="record in recentRecords"
               :key="record.id"

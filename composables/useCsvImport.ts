@@ -9,6 +9,7 @@ export interface PreparedCsvImport {
 }
 
 export function useCsvImport() {
+    const {t} = useI18n()
     const loading = ref(false)
     const error = ref<string | null>(null)
 
@@ -21,7 +22,7 @@ export function useCsvImport() {
             const inspection = await inspectCsvText(text)
             return {file, text, inspection}
         } catch (err) {
-            error.value = err instanceof Error ? err.message : 'CSV 解析失败'
+            error.value = err instanceof Error ? err.message : t('upload.parseFailed')
             throw err
         } finally {
             loading.value = false
@@ -36,7 +37,7 @@ export function useCsvImport() {
             const rawRows = await parseCsvText(prepared.text, mapping)
             return normalizeRows(rawRows)
         } catch (err) {
-            error.value = err instanceof Error ? err.message : 'CSV 解析失败'
+            error.value = err instanceof Error ? err.message : t('upload.parseFailed')
             throw err
         } finally {
             loading.value = false

@@ -3,6 +3,8 @@ import {CalendarDate} from '@internationalized/date'
 import type {SelectItem} from '@nuxt/ui'
 import type {NormalizedRecord, RecordFilterState} from '~/types/record'
 
+const {t} = useI18n()
+
 const model = defineModel<RecordFilterState>({required: true})
 const props = defineProps<{
   records: NormalizedRecord[]
@@ -51,14 +53,14 @@ const dateRange = computed({
   }
 })
 
-const sortOptions = [
-  {label: '时间（最新在前）', value: 'time-desc'},
-  {label: '时间（最早在前）', value: 'time-asc'},
-  {label: '玩家（A-Z）', value: 'player-asc'},
-  {label: '玩家（Z-A）', value: 'player-desc'},
-  {label: '服务器（A-Z）', value: 'server-asc'},
-  {label: '服务器（Z-A）', value: 'server-desc'}
-] satisfies SelectItem[]
+const sortOptions = computed(() => [
+  {label: t('filters.sort.timeDesc'), value: 'time-desc'},
+  {label: t('filters.sort.timeAsc'), value: 'time-asc'},
+  {label: t('filters.sort.playerAsc'), value: 'player-asc'},
+  {label: t('filters.sort.playerDesc'), value: 'player-desc'},
+  {label: t('filters.sort.serverAsc'), value: 'server-asc'},
+  {label: t('filters.sort.serverDesc'), value: 'server-desc'}
+] satisfies SelectItem[])
 
 function applySearch() {
   model.value.q = localQuery.value
@@ -84,7 +86,7 @@ function clear() {
             v-model="localQuery"
             icon="i-lucide-search"
             size="lg"
-            placeholder="消息 / 玩家 / 指令 / 服务器"
+            :placeholder="t('filters.searchPlaceholder')"
             @keydown.enter="applySearch"
         />
 
@@ -95,37 +97,37 @@ function clear() {
             class="justify-center"
             @click="applySearch"
         >
-          搜索
+          {{ t('common.search') }}
         </UButton>
       </div>
 
       <div class="grid gap-4 md:grid-cols-3">
         <MultiSelectDropdown
             v-model="model.types"
-            label="类型"
+            :label="t('filters.type')"
             :options="typeOptions"
-            placeholder="全部类型"
+            :placeholder="t('filters.allTypes')"
         />
 
         <MultiSelectDropdown
             v-model="model.servers"
-            label="服务器"
+            :label="t('filters.server')"
             :options="serverOptions"
-            placeholder="全部服务器"
+            :placeholder="t('filters.allServers')"
         />
 
         <MultiSelectDropdown
             v-model="model.players"
-            label="玩家"
+            :label="t('filters.player')"
             :options="playerOptions"
-            placeholder="全部玩家"
+            :placeholder="t('filters.allPlayers')"
             searchable
         />
       </div>
 
       <div class="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)_auto] lg:items-end">
         <div>
-          <label class="mb-2 block text-xs font-medium text-muted">日期范围</label>
+          <label class="mb-2 block text-xs font-medium text-muted">{{ t('filters.dateRange') }}</label>
           <UInputDate
               v-model="dateRange"
               range
@@ -137,7 +139,7 @@ function clear() {
         </div>
 
         <div>
-          <label class="mb-2 block text-xs font-medium text-muted">排序方式</label>
+          <label class="mb-2 block text-xs font-medium text-muted">{{ t('filters.sortLabel') }}</label>
           <USelect
               v-model="model.sort"
               :items="sortOptions"
@@ -155,7 +157,7 @@ function clear() {
             class="justify-center"
             @click="clear"
         >
-          重置筛选
+          {{ t('filters.reset') }}
         </UButton>
       </div>
     </div>

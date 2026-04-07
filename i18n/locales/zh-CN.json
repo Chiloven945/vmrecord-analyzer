@@ -1,0 +1,213 @@
+{
+  "nav": {
+    "overview": "总览",
+    "records": "记录",
+    "players": "玩家",
+    "servers": "服务器",
+    "settings": "设置"
+  },
+  "license": {
+    "title": "许可证",
+    "description": "vmrecord-analyzer 是开源软件。本软件以 GNU Affero 通用公共许可协议第三版（AGPL-3.0）分发。"
+  },
+  "common": {
+    "github": "GitHub",
+    "close": "关闭",
+    "cancel": "取消",
+    "clear": "清空",
+    "clearData": "清空数据",
+    "replaceFile": "更换文件",
+    "reimport": "重新导入",
+    "search": "搜索",
+    "viewAll": "查看全部",
+    "required": "必填",
+    "selectAll": "全选",
+    "noData": "暂无数据",
+    "noServerData": "暂无服务器数据",
+    "noTypeData": "暂无类型数据",
+    "backToOverview": "返回总览",
+    "csvFile": "CSV 文件",
+    "player": "玩家",
+    "server": "服务器",
+    "type": "类型",
+    "time": "时间",
+    "unknown": "未知",
+    "notAvailable": "—"
+  },
+  "settings": {
+    "title": "设置",
+    "description": "在这里调整应用偏好设置。",
+    "language": "语言",
+    "languageDescription": "切换界面显示语言，更改后会立即应用。"
+  },
+  "upload": {
+    "title": "导入 vMessageRecord CSV",
+    "description": "支持拖拽上传，也支持直接点击下面的上传框选择文件。解析、索引、筛选等操作均在本地完成，不会上传服务器。",
+    "fieldLabel": "上传 CSV 文件",
+    "hint": "如果拖拽没有反应，请直接点击上方上传框的按钮。",
+    "parseFailed": "CSV 解析失败"
+  },
+  "csvMapping": {
+    "caption": "CSV 导入",
+    "title": "没有检测到表头，请手动匹配字段",
+    "description": "无法将 CSV 第一行识别为 header。请匹配对应的字段，并确保至少映射 type 和 timestamp。",
+    "missingRequired": "缺少必填字段：{fields}",
+    "duplicateColumns": "同一列不能重复映射到多个字段。",
+    "doNotMap": "不映射",
+    "previewTitle": "预览前 5 行数据",
+    "columnLabel": "列 {index}",
+    "confirm": "导入并应用映射"
+  },
+  "multiSelect": {
+    "all": "全部",
+    "twoItems": "{first}、{second}",
+    "moreItems": "{first} 等 {count} 项",
+    "searchPlaceholder": "搜索{label}",
+    "empty": "没有可选项"
+  },
+  "filters": {
+    "searchPlaceholder": "消息 / 玩家 / 指令 / 服务器",
+    "type": "类型",
+    "server": "服务器",
+    "player": "玩家",
+    "allTypes": "全部类型",
+    "allServers": "全部服务器",
+    "allPlayers": "全部玩家",
+    "dateRange": "日期范围",
+    "sortLabel": "排序方式",
+    "reset": "重置筛选",
+    "sort": {
+      "timeDesc": "时间（最新在前）",
+      "timeAsc": "时间（最早在前）",
+      "playerAsc": "玩家（A-Z）",
+      "playerDesc": "玩家（Z-A）",
+      "serverAsc": "服务器（A-Z）",
+      "serverDesc": "服务器（Z-A）"
+    }
+  },
+  "stats": {
+    "totalRecords": "总记录数",
+    "publicChat": "公聊",
+    "privateChat": "私聊",
+    "activePlayers": "活跃玩家"
+  },
+  "index": {
+    "title": "vMessageRecord 聊天记录分析",
+    "description": "导入由 vMessageRecord 插件生成或导出的 CSV 文件查看你 Velocity 服务器上玩家的聊天记录分析！支持查看总览、玩家档案、服务器档案、双人私聊、单人时间线、记录筛选等。",
+    "currentFile": "当前文件：{file}",
+    "recordCount": "共 {count} 条",
+    "importFailed": "导入失败",
+    "importedTitle": "文件已导入",
+    "importedDescription": "{file} 已成功加载。需要替换时，点击右上角“{action}”。",
+    "serverDistribution": "服务器分布",
+    "serverDistributionDescription": "按 server 聚合记录数",
+    "typeDistribution": "类型分布",
+    "typeDistributionDescription": "CHAT / PRIVATE_MESSAGE / JOIN / LEAVE / TRANSFER",
+    "topConversations": "热门私聊组合",
+    "topConversationsDescription": "按私聊消息量排序",
+    "noConversations": "暂无私聊会话",
+    "latestRecords": "最近记录",
+    "latestRecordsDescription": "按时间倒序展示最近 10 条"
+  },
+  "records": {
+    "title": "记录浏览",
+    "currentlyShowing": "当前显示 {shown} / {total} 条记录",
+    "emptyTitle": "还没有导入记录",
+    "emptyDescription": "先回到总览页导入一个 vMessageRecord CSV 文件。"
+  },
+  "pagination": {
+    "range": "第 {start} - {end} 条，共 {total} 条"
+  },
+  "player": {
+    "listTitle": "玩家列表",
+    "listDescription": "按总记录数排序，支持按最后服务器、时间、类型和关键字筛选。",
+    "emptyTitle": "还没有导入记录",
+    "emptyDescription": "请先去总览页导入 CSV 文件后，再回来查看玩家档案。",
+    "searchPlaceholder": "搜索玩家名 / UUID / 前后缀 / 最后服务器 / 类型",
+    "lastServer": "最后服务器",
+    "timeRangeByLastSeen": "时间范围（按最后出现）",
+    "showingCount": "当前显示 {shown} / {total} 名玩家",
+    "sort": {
+      "recordsDesc": "总记录（高到低）",
+      "recordsAsc": "总记录（低到高）",
+      "recentDesc": "最近活动（最新在前）",
+      "recentAsc": "最近活动（最早在前）",
+      "nameAsc": "玩家名称（A-Z）",
+      "nameDesc": "玩家名称（Z-A）"
+    },
+    "totalActivities": "共 {count} 条活动",
+    "publicChat": "公聊",
+    "privateSent": "私聊发送",
+    "privateReceived": "私聊接收",
+    "dominantServer": "常驻服务器：{server}",
+    "backToList": "返回玩家列表",
+    "notFoundTitle": "未找到该玩家",
+    "notFoundDescription": "请确认玩家名称是否正确，或者先导入包含该玩家记录的 CSV。",
+    "firstSeen": "首次出现",
+    "lastSeen": "最后出现",
+    "frequentContacts": "常联系对象",
+    "noContacts": "暂无私聊联系人",
+    "recentActivity": "最近活动"
+  },
+  "server": {
+    "listTitle": "服务器",
+    "listDescription": "查看各个服务器的活跃度、消息量、加入离开次数与活跃玩家。",
+    "emptyTitle": "还没有导入记录",
+    "emptyDescription": "请先回到总览页导入一个 vMessageRecord CSV 文件。",
+    "activePeopleCount": "{count} 人",
+    "messages": "消息",
+    "messageCount": "消息数",
+    "joinLeave": "加入 / 离开",
+    "transferInOut": "跨服进 / 出",
+    "join": "加入",
+    "leave": "离开",
+    "transferIn": "跨服进入",
+    "transferOut": "跨服离开",
+    "backToList": "返回服务器列表",
+    "notFoundTitle": "未找到该服务器",
+    "notFoundDescription": "请确认服务器名称是否正确，或者先导入包含该服务器记录的 CSV。",
+    "firstActivity": "首次活动",
+    "lastActivity": "最后活动",
+    "activePlayers": "活跃玩家",
+    "noPlayerActivity": "暂无玩家活动",
+    "recentActivity": "最近活动"
+  },
+  "conversation": {
+    "backToRecords": "返回记录列表",
+    "emptyTitle": "当前没有这组双方对话",
+    "emptyDescription": "请确认当前导入的数据中包含这两名玩家的 PRIVATE_MESSAGE 记录。",
+    "title": "双方对话",
+    "messageCount": "消息数：{count}",
+    "start": "开始",
+    "end": "结束",
+    "sequence": "Sequence"
+  },
+  "recordDetail": {
+    "title": "记录详情",
+    "joinServer": "加入的服务器",
+    "leaveServer": "离开的服务器",
+    "transferFlow": "跨服流向",
+    "participants": "双方信息",
+    "messageContent": "消息内容",
+    "viewConversation": "查看双方对话",
+    "commandSource": "命令来源"
+  },
+  "recordRow": {
+    "joined": "加入了游戏",
+    "left": "离开了游戏"
+  },
+  "recordPage": {
+    "notFoundTitle": "未找到这条记录",
+    "notFoundDescription": "可能是当前数据已被清空，或这条记录不在当前导入文件中。",
+    "joinEvent": "加入事件",
+    "leaveEvent": "离开事件",
+    "transferEvent": "跨服转移",
+    "privateMessage": "私聊消息",
+    "sender": "发送玩家",
+    "senderServer": "发送方服务器",
+    "receiver": "接收玩家",
+    "receiverServer": "接收方服务器",
+    "publicChat": "公共聊天",
+    "chatContent": "聊天内容"
+  }
+}

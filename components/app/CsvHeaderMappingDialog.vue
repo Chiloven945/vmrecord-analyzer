@@ -12,6 +12,8 @@ const emit = defineEmits<{
   confirm: [mapping: CsvHeaderMapping]
 }>()
 
+const {t} = useI18n()
+
 const targetFields = CSV_FIELD_OPTIONS
 const draft = reactive<Record<CsvFieldName, string>>(
     Object.fromEntries(targetFields.map((field) => [field, ''])) as Record<CsvFieldName, string>
@@ -21,7 +23,7 @@ const columnCount = computed(() => Math.max(0, ...props.previewRows.map((row) =>
 const columnOptions = computed(() =>
     Array.from({length: columnCount.value}, (_, index) => ({
       value: String(index),
-      label: `${index + 1}`,
+      label: t('csvMapping.columnLabel', {index: index + 1}),
       sample: props.previewRows
           .map((row) => row[index] ?? '')
           .filter(Boolean)
@@ -79,13 +81,10 @@ function submit() {
       <div class="flex max-h-[90vh] flex-col">
         <div class="flex items-start justify-between gap-4 border-b border-default p-4 sm:p-6">
           <div>
-            <div class="text-sm text-muted">CSV 导入</div>
-            <h2 class="mt-1 text-lg font-semibold text-highlighted">没有检测到表头，请手动匹配字段</h2>
+            <div class="text-sm text-muted">{{ t('csvMapping.caption') }}</div>
+            <h2 class="mt-1 text-lg font-semibold text-highlighted">{{ t('csvMapping.title') }}</h2>
             <p class="mt-2 text-sm text-toned">
-              无法将 CSV 第一行识别为 header。请匹配对应的字段，并确保至少映射
-              <code class="rounded bg-elevated px-1.5 py-0.5 text-xs text-highlighted">type</code>
-              和
-              <code class="rounded bg-elevated px-1.5 py-0.5 text-xs text-highlighted">timestamp</code>。
+              {{ t('csvMapping.description') }}
             </p>
           </div>
           <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="emit('close')"/>
@@ -98,19 +97,17 @@ function submit() {
                   v-if="missingRequired.length"
                   class="rounded-xl border border-error/30 bg-error/10 px-3 py-2 text-sm text-error"
               >
-                缺少必填字段：{{ missingRequired.join(', ') }}
+                {{ t('csvMapping.missingRequired', {fields: missingRequired.join(', ')}) }}
               </div>
 
               <div
                   v-if="duplicateColumns.size"
                   class="rounded-xl border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning"
               >
-                同一列不能重复映射到多个字段。
+                {{ t('csvMapping.duplicateColumns') }}
               </div>
 
-              <div
-                  class="space-y-4 rounded-xl border border-default bg-elevated/60 p-3"
-              >
+              <div class="space-y-4 rounded-xl border border-default bg-elevated/60 p-3">
                 <div v-for="field in targetFields" :key="field">
                   <label class="mb-2 flex items-center gap-2 text-sm font-medium text-highlighted">
                     <span>{{ field }}</span>
@@ -119,7 +116,7 @@ function submit() {
                         color="error"
                         variant="subtle"
                     >
-                      必填
+                      {{ t('common.required') }}
                     </UBadge>
                   </label>
 
@@ -127,7 +124,7 @@ function submit() {
                       v-model="draft[field]"
                       class="w-full rounded-xl border border-default bg-default px-3 py-2.5 text-sm text-highlighted outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
-                    <option value="">不映射</option>
+                    <option value="">{{ t('csvMapping.doNotMap') }}</option>
                     <option
                         v-for="option in columnOptions"
                         :key="`${field}-${option.value}`"
@@ -141,7 +138,7 @@ function submit() {
             </div>
 
             <div class="min-w-0">
-              <div class="mb-3 text-sm font-medium text-highlighted">预览前 5 行数据</div>
+              <div class="mb-3 text-sm font-medium text-highlighted">{{ t('csvMapping.previewTitle') }}</div>
               <div class="overflow-auto rounded-xl border border-default bg-elevated/60">
                 <table class="min-w-full border-collapse text-sm">
                   <thead class="bg-elevated/80">
@@ -151,7 +148,7 @@ function submit() {
                         :key="`head-${columnIndex}`"
                         class="border-b border-default px-3 py-2 text-left font-medium text-highlighted"
                     >
-                      {{ columnIndex }}
+                      {{ t('csvMapping.columnLabel', {index: columnIndex}) }}
                     </th>
                   </tr>
                   </thead>
@@ -177,9 +174,9 @@ function submit() {
         </div>
 
         <div class="flex items-center justify-end gap-3 border-t border-default p-4 sm:p-6">
-          <UButton color="neutral" variant="outline" @click="emit('close')">取消</UButton>
+          <UButton color="neutral" variant="outline" @click="emit('close')">{{ t('common.cancel') }}</UButton>
           <UButton icon="i-lucide-check" :disabled="!canSubmit" @click="submit">
-            导入并应用映射
+            {{ t('csvMapping.confirm') }}
           </UButton>
         </div>
       </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const {t} = useI18n()
+
 const model = defineModel<string[]>({required: true})
 
 const props = withDefaults(defineProps<{
@@ -8,9 +10,9 @@ const props = withDefaults(defineProps<{
   searchable?: boolean
   emptyText?: string
 }>(), {
-  placeholder: '全部',
+  placeholder: '',
   searchable: false,
-  emptyText: '没有可选项'
+  emptyText: ''
 })
 
 const query = ref('')
@@ -23,10 +25,10 @@ const filteredOptions = computed(() => {
 
 const buttonText = computed(() => {
   const selected = model.value
-  if (!selected.length) return props.placeholder
+  if (!selected.length) return props.placeholder || t('multiSelect.all')
   if (selected.length === 1) return selected[0]
-  if (selected.length === 2) return `${selected[0]}、${selected[1]}`
-  return `${selected[0]} 等 ${selected.length} 项`
+  if (selected.length === 2) return t('multiSelect.twoItems', {first: selected[0], second: selected[1]})
+  return t('multiSelect.moreItems', {first: selected[0], count: selected.length})
 })
 
 function isSelected(option: string) {
@@ -88,10 +90,10 @@ function selectFiltered() {
             <div class="text-sm font-medium text-highlighted">{{ label }}</div>
             <div class="flex items-center gap-2">
               <UButton color="neutral" variant="ghost" size="xs" @click="selectFiltered">
-                全选
+                {{ t('common.selectAll') }}
               </UButton>
               <UButton color="neutral" variant="ghost" size="xs" @click="clearSelection">
-                清空
+                {{ t('common.clear') }}
               </UButton>
             </div>
           </div>
@@ -101,7 +103,7 @@ function selectFiltered() {
               v-model="query"
               icon="i-lucide-search"
               size="sm"
-              :placeholder="`搜索${label}`"
+              :placeholder="t('multiSelect.searchPlaceholder', { label })"
               class="mb-3"
           />
 
@@ -116,7 +118,7 @@ function selectFiltered() {
             </label>
 
             <div v-if="!filteredOptions.length" class="rounded-lg px-2 py-6 text-center text-sm text-muted">
-              {{ emptyText }}
+              {{ emptyText || t('multiSelect.empty') }}
             </div>
           </div>
         </div>

@@ -3,6 +3,8 @@ import {CalendarDate} from '@internationalized/date'
 import {useRecordsStore} from '~/stores/records'
 import {resolvePlayerServerAt} from '~/utils/recordPresentation'
 
+const {t} = useI18n()
+const {formatNumber, compareText} = useLocaleFormatting()
 const store = useRecordsStore()
 const search = ref('')
 const serverFilters = ref<string[]>([])
@@ -14,18 +16,14 @@ const page = ref(1)
 const topAnchor = ref<HTMLElement | null>(null)
 const itemsPerPage = 24
 
-const sortOptions = [
-  {label: '总记录（高到低）', value: 'records-desc'},
-  {label: '总记录（低到高）', value: 'records-asc'},
-  {label: '最近活动（最新在前）', value: 'recent-desc'},
-  {label: '最近活动（最早在前）', value: 'recent-asc'},
-  {label: '玩家名称（A-Z）', value: 'name-asc'},
-  {label: '玩家名称（Z-A）', value: 'name-desc'}
-] as const
-
-function compareText(a: string, b: string) {
-  return a.localeCompare(b, 'zh-Hans-CN', {numeric: true, sensitivity: 'base'})
-}
+const sortOptions = computed(() => [
+  {label: t('player.sort.recordsDesc'), value: 'records-desc'},
+  {label: t('player.sort.recordsAsc'), value: 'records-asc'},
+  {label: t('player.sort.recentDesc'), value: 'recent-desc'},
+  {label: t('player.sort.recentAsc'), value: 'recent-asc'},
+  {label: t('player.sort.nameAsc'), value: 'name-asc'},
+  {label: t('player.sort.nameDesc'), value: 'name-desc'}
+] as const)
 
 function toCalendarDate(value?: string) {
   if (!value) return undefined
@@ -172,8 +170,8 @@ function clearFilters() {
   <div ref="topAnchor" class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <h1 class="text-3xl font-semibold text-highlighted">玩家列表</h1>
-        <p class="mt-2 text-sm text-toned">按总记录数排序，支持按最后服务器、时间、类型和关键字筛选。</p>
+        <h1 class="text-3xl font-semibold text-highlighted">{{ t('player.listTitle') }}</h1>
+        <p class="mt-2 text-sm text-toned">{{ t('player.listDescription') }}</p>
       </div>
     </div>
 
@@ -181,8 +179,8 @@ function clearFilters() {
         v-if="!store.records.length"
         color="warning"
         variant="subtle"
-        title="还没有导入记录"
-        description="请先去总览页导入 CSV 文件后，再回来查看玩家档案。"
+        :title="t('player.emptyTitle')"
+        :description="t('player.emptyDescription')"
     />
 
     <template v-else>
@@ -192,32 +190,32 @@ function clearFilters() {
             <UInput
                 v-model="search"
                 icon="i-lucide-search"
-                placeholder="搜索玩家名 / UUID / 前后缀 / 最后服务器 / 类型"
+                :placeholder="t('player.searchPlaceholder')"
                 size="lg"
             />
-            <UButton color="primary" size="lg" icon="i-lucide-search">搜索</UButton>
+            <UButton color="primary" size="lg" icon="i-lucide-search">{{ t('common.search') }}</UButton>
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
             <MultiSelectDropdown
                 v-model="serverFilters"
-                label="最后服务器"
+                :label="t('player.lastServer')"
                 :options="serverOptions"
-                placeholder="全部服务器"
+                :placeholder="t('filters.allServers')"
                 searchable
             />
 
             <MultiSelectDropdown
                 v-model="typeFilters"
-                label="类型"
+                :label="t('common.type')"
                 :options="typeOptions"
-                placeholder="全部类型"
+                :placeholder="t('filters.allTypes')"
             />
           </div>
 
           <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.8fr)_auto] lg:items-end">
             <div>
-              <label class="mb-2 block text-xs font-medium text-muted">时间范围（按最后出现）</label>
+              <label class="mb-2 block text-xs font-medium text-muted">{{ t('player.timeRangeByLastSeen') }}</label>
               <UInputDate
                   v-model="dateRange"
                   range
@@ -229,7 +227,7 @@ function clearFilters() {
             </div>
 
             <div>
-              <label class="mb-2 block text-xs font-medium text-muted">排序方式</label>
+              <label class="mb-2 block text-xs font-medium text-muted">{{ t('filters.sortLabel') }}</label>
               <USelect
                   v-model="sort"
                   :items="sortOptions"
@@ -247,14 +245,20 @@ function clearFilters() {
                 class="justify-center"
                 @click="clearFilters"
             >
-              重置筛选
+              {{ t('filters.reset') }}
             </UButton>
           </div>
         </div>
       </UCard>
 
       <div class="flex flex-col gap-3 border-y border-default py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
+        <div class="text-sm text-muted">{{
+            t('player.showingCount', {
+              shown: formatNumber(filteredPlayers.length),
+              total: formatNumber(playerMeta.length)
+            })
+          }}
+        </div>
         <UPagination
             v-model:page="page"
             :total="filteredPlayers.length"
@@ -270,7 +274,13 @@ function clearFilters() {
       </div>
 
       <div class="flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div class="text-sm text-muted">当前显示 {{ filteredPlayers.length }} / {{ playerMeta.length }} 名玩家</div>
+        <div class="text-sm text-muted">{{
+            t('player.showingCount', {
+              shown: formatNumber(filteredPlayers.length),
+              total: formatNumber(playerMeta.length)
+            })
+          }}
+        </div>
         <UPagination
             v-model:page="page"
             :total="filteredPlayers.length"

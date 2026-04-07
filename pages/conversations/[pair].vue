@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import type {NormalizedRecord} from '~/types/record'
 import {useConversation} from '~/composables/useConversation'
 import {getPrivateMessageServers} from '~/utils/recordPresentation'
 import {useRecordsStore} from '~/stores/records'
 
+const {t} = useI18n()
+const {formatDateTime, formatTime, formatNumber} = useLocaleFormatting()
 const route = useRoute()
 const store = useRecordsStore()
 const pair = computed(() => decodeURIComponent(String(route.params.pair || '')))
@@ -52,10 +53,7 @@ function scrollToTopAnchor() {
       ? topAnchor.value.getBoundingClientRect().top + window.scrollY - 24
       : 0
 
-  window.scrollTo({
-    top: Math.max(0, top),
-    behavior: 'smooth'
-  })
+  window.scrollTo({top: Math.max(0, top), behavior: 'smooth'})
 }
 
 watch(page, async (value, oldValue) => {
@@ -79,27 +77,30 @@ function closeRecord() {
 
 <template>
   <div ref="topAnchor" class="space-y-6">
-    <UButton to="/records" color="neutral" variant="ghost" icon="i-lucide-arrow-left">返回记录列表</UButton>
+    <UButton to="/records" color="neutral" variant="ghost" icon="i-lucide-arrow-left">{{
+        t('conversation.backToRecords')
+      }}
+    </UButton>
 
     <UAlert
         v-if="!records.length"
         color="warning"
         variant="subtle"
-        title="当前没有这组双方对话"
-        description="请确认当前导入的数据中包含这两名玩家的 PRIVATE_MESSAGE 记录。"
+        :title="t('conversation.emptyTitle')"
+        :description="t('conversation.emptyDescription')"
     />
 
     <template v-else>
       <UCard>
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 class="text-2xl font-semibold text-highlighted">双方对话</h1>
+            <h1 class="text-2xl font-semibold text-highlighted">{{ t('conversation.title') }}</h1>
             <p class="mt-2 text-sm text-toned">{{ leftDisplay }} ↔ {{ rightDisplay }}</p>
           </div>
           <div class="flex flex-wrap gap-3 text-sm text-toned">
-            <span>消息数：{{ summary.total }}</span>
-            <span v-if="summary.first">开始：{{ dayjs(summary.first).format('YYYY-MM-DD HH:mm:ss') }}</span>
-            <span v-if="summary.last">结束：{{ dayjs(summary.last).format('YYYY-MM-DD HH:mm:ss') }}</span>
+            <span>{{ t('conversation.messageCount', {count: formatNumber(summary.total)}) }}</span>
+            <span v-if="summary.first">{{ t('conversation.start') }}：{{ formatDateTime(summary.first) }}</span>
+            <span v-if="summary.last">{{ t('conversation.end') }}：{{ formatDateTime(summary.last) }}</span>
           </div>
         </div>
       </UCard>
@@ -107,16 +108,20 @@ function closeRecord() {
       <UCard>
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-default pb-4">
           <div class="text-left text-lg font-semibold text-highlighted">{{ leftDisplay }}</div>
-          <div class="text-xs uppercase tracking-[0.2em] text-muted">Sequence</div>
+          <div class="text-xs uppercase tracking-[0.2em] text-muted">{{ t('conversation.sequence') }}</div>
           <div class="text-right text-lg font-semibold text-highlighted">{{ rightDisplay }}</div>
         </div>
 
         <div
             class="mt-4 flex flex-col gap-3 border-b border-default pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="text-sm text-muted">
-            第 {{ records.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
-            {{ Math.min(page * itemsPerPage, records.length) }} 条，
-            共 {{ records.length }} 条
+            {{
+              t('pagination.range', {
+                start: formatNumber(records.length ? (page - 1) * itemsPerPage + 1 : 0),
+                end: formatNumber(Math.min(page * itemsPerPage, records.length)),
+                total: formatNumber(records.length)
+              })
+            }}
           </div>
 
           <UPagination
@@ -161,7 +166,7 @@ function closeRecord() {
 
             <div class="relative z-10 flex justify-center pt-2">
               <div class="rounded-full border border-default bg-default/95 px-3 py-1 text-xs text-muted shadow-sm">
-                {{ dayjs(record.timeMs).format('MM-DD HH:mm:ss') }}
+                {{ formatTime(record.timeMs) }}
               </div>
             </div>
 
@@ -191,9 +196,13 @@ function closeRecord() {
         <div
             class="mt-6 flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="text-sm text-muted">
-            第 {{ records.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
-            {{ Math.min(page * itemsPerPage, records.length) }} 条，
-            共 {{ records.length }} 条
+            {{
+              t('pagination.range', {
+                start: formatNumber(records.length ? (page - 1) * itemsPerPage + 1 : 0),
+                end: formatNumber(Math.min(page * itemsPerPage, records.length)),
+                total: formatNumber(records.length)
+              })
+            }}
           </div>
 
           <UPagination

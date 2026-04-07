@@ -1,11 +1,14 @@
 <script setup lang="ts">
-const navigation = [
-  {label: '总览', to: '/', icon: 'i-lucide-layout-dashboard'},
-  {label: '记录', to: '/records', icon: 'i-lucide-scroll-text'},
-  {label: '玩家', to: '/players', icon: 'i-lucide-users'},
-  {label: '服务器', to: '/servers', icon: 'i-lucide-server'}
-]
+const {t} = useI18n()
 
+const navigation = computed(() => [
+  {label: t('nav.overview'), to: '/', icon: 'i-lucide-layout-dashboard'},
+  {label: t('nav.records'), to: '/records', icon: 'i-lucide-scroll-text'},
+  {label: t('nav.players'), to: '/players', icon: 'i-lucide-users'},
+  {label: t('nav.servers'), to: '/servers', icon: 'i-lucide-server'}
+])
+
+const settingsOpen = ref(false)
 const githubUrl = 'https://github.com/Chiloven945/vmrecord-analyzer'
 </script>
 
@@ -38,20 +41,24 @@ const githubUrl = 'https://github.com/Chiloven945/vmrecord-analyzer'
                 <UIcon :name="item.icon" class="size-4"/>
                 <span>{{ item.label }}</span>
               </NuxtLink>
-            </nav>
 
-            <div class="mt-8 rounded-2xl border border-default bg-elevated/70 p-4 text-sm text-muted">
-              <p class="font-medium text-highlighted">数据只在浏览器内分析</p>
-              <p class="mt-2 leading-6">导入 vMessageRecord 的 CSV 导出文件，本地完成解析与索引。</p>
-            </div>
+              <button
+                  type="button"
+                  class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-toned transition hover:bg-elevated hover:text-highlighted"
+                  @click="settingsOpen = true"
+              >
+                <UIcon name="i-lucide-settings-2" class="size-4"/>
+                <span>{{ t('nav.settings') }}</span>
+              </button>
+            </nav>
           </div>
 
           <div class="mt-auto pt-6">
             <div class="rounded-2xl border border-default bg-elevated/70 p-4">
-              <p class="text-sm font-medium text-highlighted">许可证</p>
+              <p class="text-sm font-medium text-highlighted">{{ t('license.title') }}</p>
               <p class="mt-2 text-sm text-muted">AGPL-3.0</p>
               <p class="mt-2 text-xs leading-5 text-muted">
-                vmrecord-analyzer 是开源软件。<br>本软件以 GNU Affero 通用公共许可协议第三版（AGPL-3.0）分发。
+                {{ t('license.description') }}
               </p>
 
               <div class="mt-4 flex justify-start">
@@ -62,7 +69,7 @@ const githubUrl = 'https://github.com/Chiloven945/vmrecord-analyzer'
                     variant="ghost"
                     color="neutral"
                     icon="i-lucide-github"
-                    label="GitHub"
+                    :label="t('common.github')"
                 />
               </div>
             </div>
@@ -76,5 +83,7 @@ const githubUrl = 'https://github.com/Chiloven945/vmrecord-analyzer'
         </div>
       </main>
     </div>
+
+    <SettingsDialog :open="settingsOpen" @close="settingsOpen = false"/>
   </div>
 </template>

@@ -4,6 +4,8 @@ import {type PreparedCsvImport, useCsvImport} from '~/composables/useCsvImport'
 import type {CsvHeaderMapping} from '~/utils/csv.client'
 import type {NormalizedRecord} from '~/types/record'
 
+const {t} = useI18n()
+const {formatNumber, formatDateTime} = useLocaleFormatting()
 const store = useRecordsStore()
 const {loading, error, prepareFile, importPrepared} = useCsvImport()
 
@@ -65,6 +67,13 @@ function closeRecord() {
   selectedRecord.value = null
 }
 
+const importedDescription = computed(() =>
+    t('index.importedDescription', {
+      file: store.sourceFileName || t('common.csvFile'),
+      action: t('common.replaceFile')
+    })
+)
+
 const topServers = computed(() =>
     Object.entries(store.stats.serverCounts)
         .map(([label, value]) => ({label, value}))
@@ -86,16 +95,16 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
         <p class="text-sm text-primary">vMessageRecord Chat History Analyzer</p>
-        <h1 class="mt-2 text-3xl font-semibold text-highlighted lg:text-4xl">vMessageRecord 聊天记录分析</h1>
+        <h1 class="mt-2 text-3xl font-semibold text-highlighted lg:text-4xl">{{ t('index.title') }}</h1>
         <p class="mt-3 max-w-3xl text-sm leading-6 text-toned">
-          导入由 vMessageRecord 插件生成或导出的 CSV 文件查看你 Velocity
-          服务器上玩家的聊天记录分析！支持查看总览、玩家档案、服务器档案、双人私聊、单人时间线、记录筛选等。
+          {{ t('index.description') }}
         </p>
       </div>
       <div class="flex flex-col items-start gap-3 text-sm text-toned lg:ml-auto lg:items-end">
         <div class="flex flex-wrap items-center gap-3 lg:justify-end">
-          <span v-if="store.sourceFileName">当前文件：{{ store.sourceFileName }}</span>
-          <span v-if="store.importedAt">共 {{ store.records.length }} 条</span>
+          <span v-if="store.sourceFileName">{{ t('index.currentFile', {file: store.sourceFileName}) }}</span>
+          <span v-if="store.importedAt">{{ t('index.recordCount', {count: formatNumber(store.records.length)}) }}</span>
+          <span v-if="store.importedAt">{{ formatDateTime(store.importedAt, 'datetimeShort') }}</span>
         </div>
         <div class="flex flex-wrap items-center gap-3 lg:justify-end">
           <UButton
@@ -105,7 +114,7 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
               icon="i-lucide-refresh-cw"
               @click="replaceFile"
           >
-            更换文件
+            {{ t('common.replaceFile') }}
           </UButton>
           <UButton
               v-if="store.records.length"
@@ -114,7 +123,7 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
               icon="i-lucide-trash-2"
               @click="store.clearRecords()"
           >
-            清空数据
+            {{ t('common.clearData') }}
           </UButton>
         </div>
       </div>
@@ -124,7 +133,7 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
       <CsvUploader :loading="loading" @file="onFile"/>
     </div>
 
-    <UAlert v-if="error" color="error" variant="subtle" title="导入失败" :description="error"/>
+    <UAlert v-if="error" color="error" variant="subtle" :title="t('index.importFailed')" :description="error"/>
 
     <CsvHeaderMappingDialog
         :open="mappingDialogOpen"
@@ -138,31 +147,32 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
           v-if="!showUploader"
           color="success"
           variant="subtle"
-          title="文件已导入"
-          :description="`${store.sourceFileName || 'CSV 文件'} 已成功加载。需要替换时，点击右上角“更换文件”。`"
+          :title="t('index.importedTitle')"
+          :description="importedDescription"
       />
 
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="总记录数" :value="store.stats.total" icon="i-lucide-chart-column"/>
-        <StatCard title="公聊" :value="store.stats.chat" icon="i-lucide-message-square"/>
-        <StatCard title="私聊" :value="store.stats.privateMessage" icon="i-lucide-messages-square"/>
-        <StatCard title="活跃玩家" :value="store.stats.activePlayers" icon="i-lucide-users"/>
+        <StatCard :title="t('stats.totalRecords')" :value="store.stats.total" icon="i-lucide-chart-column"/>
+        <StatCard :title="t('stats.publicChat')" :value="store.stats.chat" icon="i-lucide-message-square"/>
+        <StatCard :title="t('stats.privateChat')" :value="store.stats.privateMessage" icon="i-lucide-messages-square"/>
+        <StatCard :title="t('stats.activePlayers')" :value="store.stats.activePlayers" icon="i-lucide-users"/>
       </div>
 
       <div class="grid gap-6 xl:grid-cols-3">
-        <SectionCard title="服务器分布" description="按 server 聚合记录数">
+        <SectionCard :title="t('index.serverDistribution')" :description="t('index.serverDistributionDescription')">
           <template #actions>
-            <UButton to="/servers" color="neutral" variant="ghost" size="sm" icon="i-lucide-arrow-right">查看全部
+            <UButton to="/servers" color="neutral" variant="ghost" size="sm" icon="i-lucide-arrow-right">
+              {{ t('common.viewAll') }}
             </UButton>
           </template>
-          <DistributionBars :items="topServers" empty-text="暂无服务器数据"/>
+          <DistributionBars :items="topServers" :empty-text="t('common.noServerData')"/>
         </SectionCard>
 
-        <SectionCard title="类型分布" description="CHAT / PRIVATE_MESSAGE / JOIN / LEAVE / TRANSFER">
-          <DistributionBars :items="typeDistribution" empty-text="暂无类型数据"/>
+        <SectionCard :title="t('index.typeDistribution')" :description="t('index.typeDistributionDescription')">
+          <DistributionBars :items="typeDistribution" :empty-text="t('common.noTypeData')"/>
         </SectionCard>
 
-        <SectionCard title="热门私聊组合" description="按私聊消息量排序">
+        <SectionCard :title="t('index.topConversations')" :description="t('index.topConversationsDescription')">
           <div v-if="store.topConversations.length" class="space-y-3">
             <NuxtLink
                 v-for="item in store.topConversations.slice(0, 8)"
@@ -171,14 +181,14 @@ const latestRecords = computed(() => store.records.slice(-10).reverse())
                 class="flex items-center justify-between gap-4 rounded-xl border border-default bg-elevated px-3 py-2.5 text-sm hover:ring-1 hover:ring-primary/15"
             >
               <span class="truncate text-highlighted">{{ item.label }}</span>
-              <UBadge color="secondary" variant="subtle">{{ item.count }}</UBadge>
+              <UBadge color="secondary" variant="subtle">{{ formatNumber(item.count) }}</UBadge>
             </NuxtLink>
           </div>
-          <div v-else class="py-6 text-sm text-muted">暂无私聊会话</div>
+          <div v-else class="py-6 text-sm text-muted">{{ t('index.noConversations') }}</div>
         </SectionCard>
       </div>
 
-      <SectionCard title="最近记录" description="按时间倒序展示最近 10 条">
+      <SectionCard :title="t('index.latestRecords')" :description="t('index.latestRecordsDescription')">
         <div class="space-y-3">
           <RecordRow v-for="record in latestRecords" :key="record.id" :record="record" @select="openRecord"/>
         </div>

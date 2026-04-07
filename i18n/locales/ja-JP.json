@@ -1,0 +1,213 @@
+{
+  "nav": {
+    "overview": "概要",
+    "records": "記録",
+    "players": "プレイヤー",
+    "servers": "サーバー",
+    "settings": "設定"
+  },
+  "license": {
+    "title": "ライセンス",
+    "description": "vmrecord-analyzer は GNU Affero General Public License v3.0（AGPL-3.0）の下で配布されるオープンソースソフトウェアです。"
+  },
+  "common": {
+    "github": "GitHub",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "clear": "クリア",
+    "clearData": "データを消去",
+    "replaceFile": "ファイルを置き換える",
+    "reimport": "再インポート",
+    "search": "検索",
+    "viewAll": "すべて表示",
+    "required": "必須",
+    "selectAll": "すべて選択",
+    "noData": "データはまだありません",
+    "noServerData": "サーバーデータはまだありません",
+    "noTypeData": "タイプデータはまだありません",
+    "backToOverview": "概要に戻る",
+    "csvFile": "CSV ファイル",
+    "player": "プレイヤー",
+    "server": "サーバー",
+    "type": "タイプ",
+    "time": "時刻",
+    "unknown": "不明",
+    "notAvailable": "—"
+  },
+  "settings": {
+    "title": "設定",
+    "description": "ここでアプリケーションの設定を変更できます。",
+    "language": "言語",
+    "languageDescription": "インターフェースの言語を切り替えます。変更はすぐに適用されます。"
+  },
+  "upload": {
+    "title": "vMessageRecord CSV をインポート",
+    "description": "ここにファイルをドラッグ＆ドロップするか、下のアップロード欄をクリックして選択してください。解析、インデックス作成、フィルタリングはすべてブラウザー内でローカルに行われます。",
+    "fieldLabel": "CSV ファイルをアップロード",
+    "hint": "ドラッグ＆ドロップが反応しない場合は、上のファイル選択欄を使用してください。",
+    "parseFailed": "CSV の解析に失敗しました"
+  },
+  "csvMapping": {
+    "caption": "CSV インポート",
+    "title": "ヘッダーが検出されませんでした。項目を手動で対応付けてください",
+    "description": "CSV の先頭行をヘッダーとして認識できませんでした。項目を対応付け、type と timestamp が含まれていることを確認してください。",
+    "missingRequired": "必須項目が不足しています: {fields}",
+    "duplicateColumns": "同じ列を複数の項目に対応付けることはできません。",
+    "doNotMap": "対応付けしない",
+    "previewTitle": "先頭 5 行のプレビュー",
+    "columnLabel": "列 {index}",
+    "confirm": "インポートして対応付けを適用"
+  },
+  "multiSelect": {
+    "all": "すべて",
+    "twoItems": "{first}、{second}",
+    "moreItems": "{first} など {count} 件を選択中",
+    "searchPlaceholder": "{label}を検索",
+    "empty": "利用可能な項目がありません"
+  },
+  "filters": {
+    "searchPlaceholder": "メッセージ / プレイヤー / コマンド / サーバー",
+    "type": "タイプ",
+    "server": "サーバー",
+    "player": "プレイヤー",
+    "allTypes": "すべてのタイプ",
+    "allServers": "すべてのサーバー",
+    "allPlayers": "すべてのプレイヤー",
+    "dateRange": "日付範囲",
+    "sortLabel": "並び順",
+    "reset": "フィルターをリセット",
+    "sort": {
+      "timeDesc": "時刻（新しい順）",
+      "timeAsc": "時刻（古い順）",
+      "playerAsc": "プレイヤー（A-Z）",
+      "playerDesc": "プレイヤー（Z-A）",
+      "serverAsc": "サーバー（A-Z）",
+      "serverDesc": "サーバー（Z-A）"
+    }
+  },
+  "stats": {
+    "totalRecords": "総記録数",
+    "publicChat": "公開チャット",
+    "privateChat": "プライベートメッセージ",
+    "activePlayers": "アクティブプレイヤー"
+  },
+  "index": {
+    "title": "vMessageRecord チャット履歴アナライザー",
+    "description": "vMessageRecord プラグインが生成またはエクスポートした CSV をインポートして、Velocity ネットワーク上のチャット活動を分析できます。概要、プレイヤープロフィール、サーバープロフィール、プライベート会話、プレイヤータイムライン、フィルタ済み記録を閲覧できます。",
+    "currentFile": "現在のファイル: {file}",
+    "recordCount": "{count} 件の記録",
+    "importFailed": "インポートに失敗しました",
+    "importedTitle": "ファイルをインポートしました",
+    "importedDescription": "{file} を正常に読み込みました。置き換える場合は右上の「{action}」を使用してください。",
+    "serverDistribution": "サーバー分布",
+    "serverDistributionDescription": "サーバーごとに集計した記録数",
+    "typeDistribution": "タイプ分布",
+    "typeDistributionDescription": "CHAT / PRIVATE_MESSAGE / JOIN / LEAVE / TRANSFER",
+    "topConversations": "人気のプライベート会話",
+    "topConversationsDescription": "プライベートメッセージ数の多い順",
+    "noConversations": "プライベート会話はまだありません",
+    "latestRecords": "最新の記録",
+    "latestRecordsDescription": "時刻の降順で表示される最新 10 件の記録"
+  },
+  "records": {
+    "title": "記録",
+    "currentlyShowing": "{total} 件中 {shown} 件を表示中",
+    "emptyTitle": "まだ記録がインポートされていません",
+    "emptyDescription": "まず概要ページに戻って vMessageRecord の CSV ファイルをインポートしてください。"
+  },
+  "pagination": {
+    "range": "{total} 件中 {start} - {end} 件を表示"
+  },
+  "player": {
+    "listTitle": "プレイヤー",
+    "listDescription": "総記録数で並び替えられ、最終サーバー、期間、タイプ、キーワードで絞り込みできます。",
+    "emptyTitle": "まだ記録がインポートされていません",
+    "emptyDescription": "プレイヤープロフィールを表示する前に、概要ページから CSV ファイルをインポートしてください。",
+    "searchPlaceholder": "プレイヤー名 / UUID / Prefix / Suffix / 最終サーバー / タイプを検索",
+    "lastServer": "最終サーバー",
+    "timeRangeByLastSeen": "期間（最終出現時刻基準）",
+    "showingCount": "{total} 人中 {shown} 人を表示中",
+    "sort": {
+      "recordsDesc": "総記録数（多い順）",
+      "recordsAsc": "総記録数（少ない順）",
+      "recentDesc": "最近の活動（新しい順）",
+      "recentAsc": "最近の活動（古い順）",
+      "nameAsc": "プレイヤー名（A-Z）",
+      "nameDesc": "プレイヤー名（Z-A）"
+    },
+    "totalActivities": "{count} 件の活動",
+    "publicChat": "公開チャット",
+    "privateSent": "送信した私聊",
+    "privateReceived": "受信した私聊",
+    "dominantServer": "主なサーバー: {server}",
+    "backToList": "プレイヤー一覧に戻る",
+    "notFoundTitle": "プレイヤーが見つかりません",
+    "notFoundDescription": "プレイヤー名が正しいか確認するか、このプレイヤーの記録を含む CSV をインポートしてください。",
+    "firstSeen": "初回出現",
+    "lastSeen": "最終出現",
+    "frequentContacts": "よくやり取りする相手",
+    "noContacts": "プライベート連絡先はまだありません",
+    "recentActivity": "最近の活動"
+  },
+  "server": {
+    "listTitle": "サーバー",
+    "listDescription": "各サーバーの活動、メッセージ数、参加 / 離脱回数、アクティブプレイヤーを確認できます。",
+    "emptyTitle": "まだ記録がインポートされていません",
+    "emptyDescription": "まず概要ページに戻って vMessageRecord の CSV ファイルをインポートしてください。",
+    "activePeopleCount": "{count} 人のプレイヤー",
+    "messages": "メッセージ",
+    "messageCount": "メッセージ数",
+    "joinLeave": "参加 / 離脱",
+    "transferInOut": "転送（入 / 出）",
+    "join": "参加",
+    "leave": "離脱",
+    "transferIn": "転送先として受信",
+    "transferOut": "転送元として送出",
+    "backToList": "サーバー一覧に戻る",
+    "notFoundTitle": "サーバーが見つかりません",
+    "notFoundDescription": "サーバー名が正しいか確認するか、このサーバーの記録を含む CSV をインポートしてください。",
+    "firstActivity": "最初の活動",
+    "lastActivity": "最後の活動",
+    "activePlayers": "アクティブプレイヤー",
+    "noPlayerActivity": "プレイヤー活動はまだありません",
+    "recentActivity": "最近の活動"
+  },
+  "conversation": {
+    "backToRecords": "記録に戻る",
+    "emptyTitle": "この組み合わせの会話は見つかりません",
+    "emptyDescription": "現在のインポートに、この 2 人の PRIVATE_MESSAGE 記録が含まれていることを確認してください。",
+    "title": "会話",
+    "messageCount": "メッセージ数: {count}",
+    "start": "開始",
+    "end": "終了",
+    "sequence": "シーケンス"
+  },
+  "recordDetail": {
+    "title": "記録の詳細",
+    "joinServer": "参加したサーバー",
+    "leaveServer": "離脱したサーバー",
+    "transferFlow": "転送経路",
+    "participants": "参加者",
+    "messageContent": "メッセージ内容",
+    "viewConversation": "会話を見る",
+    "commandSource": "コマンド元"
+  },
+  "recordRow": {
+    "joined": "ゲームに参加しました",
+    "left": "ゲームを退出しました"
+  },
+  "recordPage": {
+    "notFoundTitle": "記録が見つかりません",
+    "notFoundDescription": "現在のデータが消去されたか、この記録が現在のインポートに含まれていない可能性があります。",
+    "joinEvent": "参加イベント",
+    "leaveEvent": "離脱イベント",
+    "transferEvent": "転送イベント",
+    "privateMessage": "プライベートメッセージ",
+    "sender": "送信者",
+    "senderServer": "送信者サーバー",
+    "receiver": "受信者",
+    "receiverServer": "受信者サーバー",
+    "publicChat": "公開チャット",
+    "chatContent": "チャット内容"
+  }
+}

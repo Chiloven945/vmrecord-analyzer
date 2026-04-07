@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const {t} = useI18n()
+
 const props = defineProps<{
   loading?: boolean
 }>()
@@ -42,13 +44,15 @@ function drop(event: DragEvent) {
                :class="loading ? 'animate-spin' : ''"/>
       </div>
 
-      <h2 class="mt-5 text-2xl font-semibold text-highlighted">导入 vMessageRecord CSV</h2>
+      <h2 class="mt-5 text-2xl font-semibold text-highlighted">{{ t('upload.title') }}</h2>
       <p class="mt-3 max-w-2xl text-sm leading-6 text-toned">
-        支持拖拽上传，也支持直接点击下面的上传框选择文件。解析、索引、筛选等操作均在本地完成，不会上传服务器。
+        {{ t('upload.description') }}
       </p>
 
       <div class="mt-6 w-full max-w-2xl rounded-2xl border border-default bg-elevated/60 p-4 text-left">
-        <label for="csv-file-input" class="mb-2 block text-sm font-medium text-highlighted">上传 CSV 文件</label>
+        <label for="csv-file-input" class="mb-2 block text-sm font-medium text-highlighted">{{
+            t('upload.fieldLabel')
+          }}</label>
         <input
             id="csv-file-input"
             ref="inputRef"
@@ -58,7 +62,7 @@ function drop(event: DragEvent) {
             @change="pick"
         >
         <div class="mt-3 flex flex-wrap items-center gap-3">
-          <span class="text-xs text-muted">如果拖拽没有反应，请直接点击上方上传框的按钮。</span>
+          <span class="text-xs text-muted">{{ t('upload.hint') }}</span>
         </div>
       </div>
     </div>

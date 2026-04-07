@@ -1,0 +1,213 @@
+{
+  "nav": {
+    "overview": "Overview",
+    "records": "Records",
+    "players": "Players",
+    "servers": "Servers",
+    "settings": "Settings"
+  },
+  "license": {
+    "title": "License",
+    "description": "vmrecord-analyzer is open-source software distributed under the GNU Affero General Public License v3.0 (AGPL-3.0)."
+  },
+  "common": {
+    "github": "GitHub",
+    "close": "Close",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "clearData": "Clear data",
+    "replaceFile": "Replace file",
+    "reimport": "Re-import",
+    "search": "Search",
+    "viewAll": "View all",
+    "required": "Required",
+    "selectAll": "Select all",
+    "noData": "No data yet",
+    "noServerData": "No server data yet",
+    "noTypeData": "No type data yet",
+    "backToOverview": "Back to overview",
+    "csvFile": "CSV file",
+    "player": "Player",
+    "server": "Server",
+    "type": "Type",
+    "time": "Time",
+    "unknown": "Unknown",
+    "notAvailable": "—"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Adjust application preferences here.",
+    "language": "Language",
+    "languageDescription": "Switch the interface language. Changes will be applied immediately."
+  },
+  "upload": {
+    "title": "Import vMessageRecord CSV",
+    "description": "Drag and drop a file here, or click the upload box below to choose one. Parsing, indexing, and filtering all happen locally in your browser.",
+    "fieldLabel": "Upload CSV file",
+    "hint": "If drag and drop does not respond, use the file picker above.",
+    "parseFailed": "Failed to parse CSV"
+  },
+  "csvMapping": {
+    "caption": "CSV Import",
+    "title": "No header detected, please map the fields manually",
+    "description": "The first CSV row could not be recognized as a header. Please map the fields and make sure type and timestamp are included.",
+    "missingRequired": "Missing required fields: {fields}",
+    "duplicateColumns": "The same column cannot be mapped to multiple fields.",
+    "doNotMap": "Do not map",
+    "previewTitle": "Preview of the first 5 rows",
+    "columnLabel": "Column {index}",
+    "confirm": "Import and apply mapping"
+  },
+  "multiSelect": {
+    "all": "All",
+    "twoItems": "{first}, {second}",
+    "moreItems": "{first} and {count} selected",
+    "searchPlaceholder": "Search {label}",
+    "empty": "No options available"
+  },
+  "filters": {
+    "searchPlaceholder": "Message / player / command / server",
+    "type": "Type",
+    "server": "Server",
+    "player": "Player",
+    "allTypes": "All types",
+    "allServers": "All servers",
+    "allPlayers": "All players",
+    "dateRange": "Date range",
+    "sortLabel": "Sort by",
+    "reset": "Reset filters",
+    "sort": {
+      "timeDesc": "Time (newest first)",
+      "timeAsc": "Time (oldest first)",
+      "playerAsc": "Player (A-Z)",
+      "playerDesc": "Player (Z-A)",
+      "serverAsc": "Server (A-Z)",
+      "serverDesc": "Server (Z-A)"
+    }
+  },
+  "stats": {
+    "totalRecords": "Total records",
+    "publicChat": "Public chat",
+    "privateChat": "Private messages",
+    "activePlayers": "Active players"
+  },
+  "index": {
+    "title": "vMessageRecord Chat History Analyzer",
+    "description": "Import CSV files generated or exported by the vMessageRecord plugin to analyze chat activity on your Velocity network. Browse the overview, player profiles, server profiles, private conversations, player timelines, and filtered records.",
+    "currentFile": "Current file: {file}",
+    "recordCount": "{count} records",
+    "importFailed": "Import failed",
+    "importedTitle": "File imported",
+    "importedDescription": "{file} was loaded successfully. To replace it, use '{action}' in the top-right corner.",
+    "serverDistribution": "Server distribution",
+    "serverDistributionDescription": "Record counts grouped by server",
+    "typeDistribution": "Type distribution",
+    "typeDistributionDescription": "CHAT / PRIVATE_MESSAGE / JOIN / LEAVE / TRANSFER",
+    "topConversations": "Top private conversations",
+    "topConversationsDescription": "Sorted by private message volume",
+    "noConversations": "No private conversations yet",
+    "latestRecords": "Latest records",
+    "latestRecordsDescription": "The 10 most recent records in descending time order"
+  },
+  "records": {
+    "title": "Records",
+    "currentlyShowing": "Showing {shown} / {total} records",
+    "emptyTitle": "No records imported yet",
+    "emptyDescription": "Go back to the overview page and import a vMessageRecord CSV file first."
+  },
+  "pagination": {
+    "range": "Showing {start} - {end} of {total}"
+  },
+  "player": {
+    "listTitle": "Players",
+    "listDescription": "Sorted by total record count, with filters for last server, time range, type, and keywords.",
+    "emptyTitle": "No records imported yet",
+    "emptyDescription": "Import a CSV file from the overview page before browsing player profiles.",
+    "searchPlaceholder": "Search player name / UUID / prefixes / suffixes / last server / type",
+    "lastServer": "Last server",
+    "timeRangeByLastSeen": "Time range (by last seen)",
+    "showingCount": "Showing {shown} / {total} players",
+    "sort": {
+      "recordsDesc": "Total records (high to low)",
+      "recordsAsc": "Total records (low to high)",
+      "recentDesc": "Recent activity (newest first)",
+      "recentAsc": "Recent activity (oldest first)",
+      "nameAsc": "Player name (A-Z)",
+      "nameDesc": "Player name (Z-A)"
+    },
+    "totalActivities": "{count} activities",
+    "publicChat": "Public chat",
+    "privateSent": "Private sent",
+    "privateReceived": "Private received",
+    "dominantServer": "Main server: {server}",
+    "backToList": "Back to players",
+    "notFoundTitle": "Player not found",
+    "notFoundDescription": "Check whether the player name is correct, or import a CSV that contains this player's records.",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "frequentContacts": "Frequent contacts",
+    "noContacts": "No private contacts yet",
+    "recentActivity": "Recent activity"
+  },
+  "server": {
+    "listTitle": "Servers",
+    "listDescription": "Inspect activity, message volume, join/leave counts, and active players for each server.",
+    "emptyTitle": "No records imported yet",
+    "emptyDescription": "Go back to the overview page and import a vMessageRecord CSV file first.",
+    "activePeopleCount": "{count} players",
+    "messages": "Messages",
+    "messageCount": "Message count",
+    "joinLeave": "Join / Leave",
+    "transferInOut": "Transfer in / out",
+    "join": "Join",
+    "leave": "Leave",
+    "transferIn": "Transfer in",
+    "transferOut": "Transfer out",
+    "backToList": "Back to servers",
+    "notFoundTitle": "Server not found",
+    "notFoundDescription": "Check whether the server name is correct, or import a CSV that contains this server's records.",
+    "firstActivity": "First activity",
+    "lastActivity": "Last activity",
+    "activePlayers": "Active players",
+    "noPlayerActivity": "No player activity yet",
+    "recentActivity": "Recent activity"
+  },
+  "conversation": {
+    "backToRecords": "Back to records",
+    "emptyTitle": "No conversation found for this pair",
+    "emptyDescription": "Make sure the current import contains PRIVATE_MESSAGE records for these two players.",
+    "title": "Conversation",
+    "messageCount": "Messages: {count}",
+    "start": "Start",
+    "end": "End",
+    "sequence": "Sequence"
+  },
+  "recordDetail": {
+    "title": "Record details",
+    "joinServer": "Joined server",
+    "leaveServer": "Left server",
+    "transferFlow": "Transfer flow",
+    "participants": "Participants",
+    "messageContent": "Message content",
+    "viewConversation": "View conversation",
+    "commandSource": "Command source"
+  },
+  "recordRow": {
+    "joined": "joined the game",
+    "left": "left the game"
+  },
+  "recordPage": {
+    "notFoundTitle": "Record not found",
+    "notFoundDescription": "The current data may have been cleared, or this record is not part of the current import.",
+    "joinEvent": "Join event",
+    "leaveEvent": "Leave event",
+    "transferEvent": "Transfer event",
+    "privateMessage": "Private message",
+    "sender": "Sender",
+    "senderServer": "Sender server",
+    "receiver": "Receiver",
+    "receiverServer": "Receiver server",
+    "publicChat": "Public chat",
+    "chatContent": "Chat content"
+  }
+}

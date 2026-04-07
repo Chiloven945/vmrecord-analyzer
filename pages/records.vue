@@ -3,6 +3,8 @@ import type {NormalizedRecord, RecordFilterState} from '~/types/record'
 import {useRecordsStore} from '~/stores/records'
 import {useRecordFilters} from '~/composables/useRecordFilters'
 
+const {t} = useI18n()
+const {formatNumber} = useLocaleFormatting()
 const store = useRecordsStore()
 const route = useRoute()
 const router = useRouter()
@@ -109,11 +111,16 @@ function closeRecord() {
   <div ref="topAnchor" class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <h1 class="text-3xl font-semibold text-highlighted">记录浏览</h1>
-        <p class="mt-2 text-sm text-toned">当前显示 {{ filtered.length }} / {{ store.records.length }} 条记录</p>
+        <h1 class="text-3xl font-semibold text-highlighted">{{ t('records.title') }}</h1>
+        <p class="mt-2 text-sm text-toned">{{
+            t('records.currentlyShowing', {
+              shown: formatNumber(filtered.length),
+              total: formatNumber(store.records.length)
+            })
+          }}</p>
       </div>
       <div class="flex gap-3">
-        <UButton to="/" color="primary" variant="soft" icon="i-lucide-upload">重新导入</UButton>
+        <UButton to="/" color="primary" variant="soft" icon="i-lucide-upload">{{ t('common.reimport') }}</UButton>
       </div>
     </div>
 
@@ -121,8 +128,8 @@ function closeRecord() {
         v-if="!store.records.length"
         color="warning"
         variant="subtle"
-        title="还没有导入记录"
-        description="先回到总览页导入一个 vMessageRecord CSV 文件。"
+        :title="t('records.emptyTitle')"
+        :description="t('records.emptyDescription')"
     />
 
     <template v-else>
@@ -130,14 +137,18 @@ function closeRecord() {
 
       <div class="flex flex-col gap-3 border-y border-default py-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="text-sm text-muted">
-          第 {{ filtered.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
-          {{ Math.min(page * itemsPerPage, filtered.length) }} 条，
-          共 {{ filtered.length }} 条
+          {{
+            t('pagination.range', {
+              start: formatNumber(filtered.length ? (page - 1) * itemsPerPage + 1 : 0),
+              end: formatNumber(Math.min(page * itemsPerPage, filtered.length)),
+              total: formatNumber(filtered.length)
+            })
+          }}
         </div>
 
         <div class="flex items-center gap-3">
           <UButton color="neutral" variant="ghost" icon="i-lucide-rotate-ccw" @click="reset">
-            重置
+            {{ t('filters.reset') }}
           </UButton>
 
           <UPagination
@@ -163,14 +174,18 @@ function closeRecord() {
 
       <div class="flex flex-col gap-3 border-t border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="text-sm text-muted">
-          第 {{ filtered.length ? (page - 1) * itemsPerPage + 1 : 0 }} -
-          {{ Math.min(page * itemsPerPage, filtered.length) }} 条，
-          共 {{ filtered.length }} 条
+          {{
+            t('pagination.range', {
+              start: formatNumber(filtered.length ? (page - 1) * itemsPerPage + 1 : 0),
+              end: formatNumber(Math.min(page * itemsPerPage, filtered.length)),
+              total: formatNumber(filtered.length)
+            })
+          }}
         </div>
 
         <div class="flex items-center gap-3">
           <UButton color="neutral" variant="ghost" icon="i-lucide-rotate-ccw" @click="reset">
-            重置
+            {{ t('filters.reset') }}
           </UButton>
 
           <UPagination

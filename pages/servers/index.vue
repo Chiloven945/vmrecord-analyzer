@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import {useRecordsStore} from '~/stores/records'
 
+const {t} = useI18n()
+const {formatDateTime, formatNumber} = useLocaleFormatting()
 const store = useRecordsStore()
 
 const servers = computed(() => store.servers)
@@ -11,18 +12,21 @@ const servers = computed(() => store.servers)
   <div class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <h1 class="text-3xl font-semibold text-highlighted">服务器</h1>
-        <p class="mt-2 text-sm text-toned">查看各个服务器的活跃度、消息量、加入离开次数与活跃玩家。</p>
+        <h1 class="text-3xl font-semibold text-highlighted">{{ t('server.listTitle') }}</h1>
+        <p class="mt-2 text-sm text-toned">{{ t('server.listDescription') }}</p>
       </div>
-      <UButton to="/" color="primary" variant="soft" icon="i-lucide-layout-dashboard">返回总览</UButton>
+      <UButton to="/" color="primary" variant="soft" icon="i-lucide-layout-dashboard">{{
+          t('common.backToOverview')
+        }}
+      </UButton>
     </div>
 
     <UAlert
         v-if="!store.records.length"
         color="warning"
         variant="subtle"
-        title="还没有导入记录"
-        description="请先回到总览页导入一个 vMessageRecord CSV 文件。"
+        :title="t('server.emptyTitle')"
+        :description="t('server.emptyDescription')"
     />
 
     <div v-else class="space-y-3">
@@ -37,34 +41,36 @@ const servers = computed(() => store.servers)
             <div class="min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 <h2 class="truncate text-xl font-semibold text-highlighted">{{ server.name }}</h2>
-                <UBadge color="info" variant="subtle">{{ Object.keys(server.players).length }} 人</UBadge>
+                <UBadge color="info" variant="subtle">
+                  {{ t('server.activePeopleCount', {count: formatNumber(Object.keys(server.players).length)}) }}
+                </UBadge>
               </div>
               <p class="mt-2 text-sm text-toned">
-                最后活动：{{ server.lastSeen ? dayjs(server.lastSeen).format('YYYY-MM-DD HH:mm:ss') : '-' }}
+                {{ t('server.lastActivity') }}：{{ formatDateTime(server.lastSeen) }}
               </p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">总记录</div>
-                <div class="mt-1 font-semibold text-highlighted">{{ server.totalRecords }}</div>
+                <div class="text-muted">{{ t('stats.totalRecords') }}</div>
+                <div class="mt-1 font-semibold text-highlighted">{{ formatNumber(server.totalRecords) }}</div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">消息</div>
-                <div class="mt-1 font-semibold text-highlighted">{{
-                    server.publicMessages + server.privateMessages
-                  }}
+                <div class="text-muted">{{ t('server.messages') }}</div>
+                <div class="mt-1 font-semibold text-highlighted">
+                  {{ formatNumber(server.publicMessages + server.privateMessages) }}
                 </div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">加入 / 离开</div>
-                <div class="mt-1 font-semibold text-highlighted">{{ server.joins }} / {{ server.leaves }}</div>
+                <div class="text-muted">{{ t('server.joinLeave') }}</div>
+                <div class="mt-1 font-semibold text-highlighted">{{ formatNumber(server.joins) }} /
+                  {{ formatNumber(server.leaves) }}
+                </div>
               </div>
               <div class="rounded-xl bg-elevated p-3">
-                <div class="text-muted">跨服进 / 出</div>
-                <div class="mt-1 font-semibold text-highlighted">{{ server.transfersIn }} / {{
-                    server.transfersOut
-                  }}
+                <div class="text-muted">{{ t('server.transferInOut') }}</div>
+                <div class="mt-1 font-semibold text-highlighted">{{ formatNumber(server.transfersIn) }} /
+                  {{ formatNumber(server.transfersOut) }}
                 </div>
               </div>
             </div>

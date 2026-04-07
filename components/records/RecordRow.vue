@@ -3,6 +3,9 @@ import type {NormalizedRecord} from '~/types/record'
 import {getPrivateMessageServers, getRecordBadgeColor, parseTransferFlow} from '~/utils/recordPresentation'
 import {useRecordsStore} from '~/stores/records'
 
+const {t} = useI18n()
+const {formatDateTime} = useLocaleFormatting()
+
 const props = defineProps<{
   record: NormalizedRecord
   keyword?: string
@@ -50,7 +53,7 @@ function serverLink(name: string) {
   >
     <div class="grid gap-4 lg:grid-cols-[180px_1fr]">
       <div class="space-y-2">
-        <p class="text-sm font-medium text-highlighted">{{ record.timestamp }}</p>
+        <p class="text-sm font-medium text-highlighted">{{ formatDateTime(record.timeMs) }}</p>
         <NuxtLink :to="recordTypeLink(record.type)" class="inline-flex" @click.stop>
           <UBadge :color="getRecordBadgeColor(record.type)" variant="subtle">
             {{ record.type }}
@@ -61,35 +64,35 @@ function serverLink(name: string) {
       <div class="min-w-0 space-y-3">
         <template v-if="record.type === 'JOIN'">
           <div class="flex flex-wrap items-center gap-2">
-            <NuxtLink :to="playerLink(record.senderName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.senderName || 'Unknown' }}
+              {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
-            <span class="text-sm text-toned">加入了</span>
-            <NuxtLink :to="serverLink(record.server || 'Unknown')" class="inline-flex" @click.stop>
-              <UBadge color="success" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+            <span class="text-sm text-toned">{{ t('recordRow.joined') }}</span>
+            <NuxtLink :to="serverLink(record.server || t('common.unknown'))" class="inline-flex" @click.stop>
+              <UBadge color="success" variant="soft">{{ record.server || t('common.unknown') }}</UBadge>
             </NuxtLink>
           </div>
         </template>
 
         <template v-else-if="record.type === 'LEAVE'">
           <div class="flex flex-wrap items-center gap-2">
-            <NuxtLink :to="playerLink(record.senderName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.senderName || 'Unknown' }}
+              {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
-            <span class="text-sm text-toned">离开了</span>
-            <NuxtLink :to="serverLink(record.server || 'Unknown')" class="inline-flex" @click.stop>
-              <UBadge color="error" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+            <span class="text-sm text-toned">{{ t('recordRow.left') }}</span>
+            <NuxtLink :to="serverLink(record.server || t('common.unknown'))" class="inline-flex" @click.stop>
+              <UBadge color="error" variant="soft">{{ record.server || t('common.unknown') }}</UBadge>
             </NuxtLink>
           </div>
         </template>
 
         <template v-else-if="record.type === 'TRANSFER'">
           <div class="flex flex-wrap items-center gap-3">
-            <NuxtLink :to="playerLink(record.senderName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.senderName || 'Unknown' }}
+              {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
             <div
                 class="flex flex-wrap items-center gap-2 rounded-xl border border-default bg-elevated px-3 py-2 text-sm">
@@ -109,17 +112,17 @@ function serverLink(name: string) {
             <NuxtLink :to="serverLink(privateServers.senderServer)" class="inline-flex" @click.stop>
               <UBadge color="info" variant="soft">{{ privateServers.senderServer }}</UBadge>
             </NuxtLink>
-            <NuxtLink :to="playerLink(record.senderName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
                       class="font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.senderName || 'Unknown' }}
+              {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
             <UIcon name="i-lucide-arrow-right" class="size-4 text-primary"/>
             <NuxtLink :to="serverLink(privateServers.receiverServer)" class="inline-flex" @click.stop>
               <UBadge color="secondary" variant="soft">{{ privateServers.receiverServer }}</UBadge>
             </NuxtLink>
-            <NuxtLink :to="playerLink(record.receiverName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.receiverName || t('common.unknown'))"
                       class="font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.receiverName || 'Unknown' }}
+              {{ record.receiverName || t('common.unknown') }}
             </NuxtLink>
           </div>
 
@@ -130,13 +133,13 @@ function serverLink(name: string) {
 
         <template v-else>
           <div class="flex flex-wrap items-center gap-2 text-sm text-toned">
-            <NuxtLink :to="playerLink(record.senderName || 'Unknown')"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
-              {{ record.senderName || 'Unknown' }}
+              {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
             <span class="text-muted">·</span>
-            <NuxtLink :to="serverLink(record.server || 'Unknown')" class="inline-flex" @click.stop>
-              <UBadge color="info" variant="soft">{{ record.server || 'Unknown' }}</UBadge>
+            <NuxtLink :to="serverLink(record.server || t('common.unknown'))" class="inline-flex" @click.stop>
+              <UBadge color="info" variant="soft">{{ record.server || t('common.unknown') }}</UBadge>
             </NuxtLink>
           </div>
 
