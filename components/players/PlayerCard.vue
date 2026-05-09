@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {PlayerProfile} from '~/types/record'
 
 const {t} = useI18n()
-const {formatDateTime, formatNumber} = useLocaleFormatting()
+const {formatDateTime, formatNumber, formatDuration} = useLocaleFormatting()
 
 const props = defineProps<{
   player: PlayerProfile
@@ -34,6 +34,10 @@ const dominantServer = computed(() =>
         <div class="rounded-xl bg-elevated p-3">
           <div class="text-muted">{{ t('player.privateSent') }}</div>
           <div class="mt-1 font-semibold text-highlighted">{{ formatNumber(player.privateMessagesSent) }}</div>
+        </div>
+        <div class="rounded-xl bg-elevated p-3 col-span-2">
+          <div class="text-muted">{{ t('player.playTime') }}</div>
+          <div class="mt-1 font-semibold text-highlighted">{{ formatDuration(player.playTimeMs) }}</div>
         </div>
       </div>
 

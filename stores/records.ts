@@ -21,8 +21,10 @@ export const useRecordsStore = defineStore('records', () => {
 
     const playerProfiles = computed<Record<string, PlayerProfile>>(() => {
         const map: Record<string, PlayerProfile> = {}
+        const sessionStartMap: Record<string, number> = {}
+        const orderedRecords = [...records.value].sort((a, b) => a.timeMs - b.timeMs)
 
-        for (const record of records.value) {
+        for (const record of orderedRecords) {
             const touchPlayer = (name: string, uuid: string, prefix = '', suffix = '') => {
                 if (!name) return null
                 const key = name.toLowerCase()
@@ -39,6 +41,8 @@ export const useRecordsStore = defineStore('records', () => {
                         joins: 0,
                         leaves: 0,
                         transfers: 0,
+                        playTimeMs: 0,
+                        playSessions: 0,
                         servers: {},
                         contacts: {},
                         activeHours: {},
@@ -66,6 +70,18 @@ export const useRecordsStore = defineStore('records', () => {
                 if (record.type === 'JOIN') sender.joins += 1
                 if (record.type === 'LEAVE') sender.leaves += 1
                 if (record.type === 'TRANSFER') sender.transfers += 1
+                if (record.type === 'JOIN') {
+                    sessionStartMap[sender.name.toLowerCase()] = record.timeMs
+                }
+                if (record.type === 'LEAVE') {
+                    const sessionKey = sender.name.toLowerCase()
+                    const sessionStart = sessionStartMap[sessionKey]
+                    if (sessionStart !== undefined && record.timeMs >= sessionStart) {
+                        sender.playTimeMs += record.timeMs - sessionStart
+                        sender.playSessions += 1
+                    }
+                    delete sessionStartMap[sessionKey]
+                }
                 if (record.isPrivate) sender.privateMessagesSent += 1
             }
 

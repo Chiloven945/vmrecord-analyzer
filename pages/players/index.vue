@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {CalendarDate} from '@internationalized/date'
 import {useRecordsStore} from '~/stores/records'
 import {resolvePlayerServerAt} from '~/utils/recordPresentation'
@@ -9,7 +9,7 @@ const store = useRecordsStore()
 const search = ref('')
 const serverFilters = ref<string[]>([])
 const typeFilters = ref<string[]>([])
-const sort = ref<'recent-desc' | 'recent-asc' | 'name-asc' | 'name-desc' | 'records-desc' | 'records-asc'>('records-desc')
+const sort = ref<'recent-desc' | 'recent-asc' | 'name-asc' | 'name-desc' | 'records-desc' | 'records-asc' | 'playtime-desc' | 'playtime-asc'>('records-desc')
 const start = ref<string | undefined>()
 const end = ref<string | undefined>()
 const page = ref(1)
@@ -19,6 +19,8 @@ const itemsPerPage = 24
 const sortOptions = computed(() => [
   {label: t('player.sort.recordsDesc'), value: 'records-desc'},
   {label: t('player.sort.recordsAsc'), value: 'records-asc'},
+  {label: t('player.sort.playtimeDesc'), value: 'playtime-desc'},
+  {label: t('player.sort.playtimeAsc'), value: 'playtime-asc'},
   {label: t('player.sort.recentDesc'), value: 'recent-desc'},
   {label: t('player.sort.recentAsc'), value: 'recent-asc'},
   {label: t('player.sort.nameAsc'), value: 'name-asc'},
@@ -113,6 +115,10 @@ const filteredPlayers = computed(() => {
     switch (sort.value) {
       case 'records-asc':
         return a.player.totalRecords - b.player.totalRecords || compareText(a.player.name, b.player.name)
+      case 'playtime-desc':
+        return b.player.playTimeMs - a.player.playTimeMs || compareText(a.player.name, b.player.name)
+      case 'playtime-asc':
+        return a.player.playTimeMs - b.player.playTimeMs || compareText(a.player.name, b.player.name)
       case 'recent-desc':
         return (b.player.lastSeen || 0) - (a.player.lastSeen || 0) || compareText(a.player.name, b.player.name)
       case 'recent-asc':
@@ -177,10 +183,10 @@ function clearFilters() {
 
     <UAlert
         v-if="!store.records.length"
+        :description="t('player.emptyDescription')"
+        :title="t('player.emptyTitle')"
         color="warning"
         variant="subtle"
-        :title="t('player.emptyTitle')"
-        :description="t('player.emptyDescription')"
     />
 
     <template v-else>
@@ -189,11 +195,11 @@ function clearFilters() {
           <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
             <UInput
                 v-model="search"
-                icon="i-lucide-search"
                 :placeholder="t('player.searchPlaceholder')"
+                icon="i-lucide-search"
                 size="lg"
             />
-            <UButton color="primary" size="lg" icon="i-lucide-search">{{ t('common.search') }}</UButton>
+            <UButton color="primary" icon="i-lucide-search" size="lg">{{ t('common.search') }}</UButton>
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
@@ -218,11 +224,11 @@ function clearFilters() {
               <label class="mb-2 block text-xs font-medium text-muted">{{ t('player.timeRangeByLastSeen') }}</label>
               <UInputDate
                   v-model="dateRange"
+                  class="w-full"
                   range
+                  separator-icon="i-lucide-arrow-right"
                   size="lg"
                   variant="outline"
-                  separator-icon="i-lucide-arrow-right"
-                  class="w-full"
               />
             </div>
 
@@ -231,18 +237,18 @@ function clearFilters() {
               <USelect
                   v-model="sort"
                   :items="sortOptions"
-                  value-key="value"
-                  size="lg"
                   class="w-full"
+                  size="lg"
+                  value-key="value"
               />
             </div>
 
             <UButton
-                color="neutral"
-                variant="outline"
-                size="lg"
-                icon="i-lucide-rotate-ccw"
                 class="justify-center"
+                color="neutral"
+                icon="i-lucide-rotate-ccw"
+                size="lg"
+                variant="outline"
                 @click="clearFilters"
             >
               {{ t('filters.reset') }}
@@ -261,11 +267,11 @@ function clearFilters() {
         </div>
         <UPagination
             v-model:page="page"
-            :total="filteredPlayers.length"
             :items-per-page="itemsPerPage"
-            show-edges
+            :total="filteredPlayers.length"
             active-color="primary"
             active-variant="solid"
+            show-edges
         />
       </div>
 
@@ -283,11 +289,11 @@ function clearFilters() {
         </div>
         <UPagination
             v-model:page="page"
-            :total="filteredPlayers.length"
             :items-per-page="itemsPerPage"
-            show-edges
+            :total="filteredPlayers.length"
             active-color="primary"
             active-variant="solid"
+            show-edges
         />
       </div>
     </template>

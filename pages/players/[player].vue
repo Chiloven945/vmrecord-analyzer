@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {NormalizedRecord} from '~/types/record'
 import {usePlayerProfile} from '~/composables/usePlayerProfile'
 
 const {t} = useI18n()
-const {formatDateTime, formatNumber} = useLocaleFormatting()
+const {formatDateTime, formatNumber, formatDuration} = useLocaleFormatting()
 const route = useRoute()
 const playerName = computed(() => decodeURIComponent(String(route.params.player || '')))
 const {profile, records, privateContacts} = usePlayerProfile(playerName)
@@ -26,17 +26,17 @@ function closeRecord() {
 
 <template>
   <div class="space-y-6">
-    <UButton to="/players" color="neutral" variant="ghost" icon="i-lucide-arrow-left">{{
+    <UButton color="neutral" icon="i-lucide-arrow-left" to="/players" variant="ghost">{{
         t('player.backToList')
       }}
     </UButton>
 
     <UAlert
         v-if="!profile"
+        :description="t('player.notFoundDescription')"
+        :title="t('player.notFoundTitle')"
         color="warning"
         variant="subtle"
-        :title="t('player.notFoundTitle')"
-        :description="t('player.notFoundDescription')"
     />
 
     <template v-else>
@@ -71,6 +71,13 @@ function closeRecord() {
                 <div class="text-muted">{{ t('player.privateReceived') }}</div>
                 <div class="mt-1 text-xl font-semibold text-highlighted">
                   {{ formatNumber(profile.privateMessagesReceived) }}
+                </div>
+              </div>
+              <div class="rounded-xl bg-elevated p-3 sm:col-span-2">
+                <div class="text-muted">{{ t('player.playTime') }}</div>
+                <div class="mt-1 text-xl font-semibold text-highlighted">{{ formatDuration(profile.playTimeMs) }}</div>
+                <div class="mt-1 text-xs text-toned">
+                  {{ t('player.playTimeSessions', {count: formatNumber(profile.playSessions)}) }}
                 </div>
               </div>
             </div>
