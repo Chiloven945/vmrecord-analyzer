@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {NormalizedRecord} from '~/types/record'
 import {getPrivateMessageServers, getRecordBadgeColor, parseTransferFlow} from '~/utils/recordPresentation'
 import {useRecordsStore} from '~/stores/records'
@@ -35,8 +35,8 @@ function recordTypeLink(type: string) {
   return {path: '/records', query: {type}}
 }
 
-function playerLink(name: string) {
-  return `/players/${encodeURIComponent(name)}`
+function playerLink(name: string, uuid = '') {
+  return `/players/${encodeURIComponent(uuid || name)}`
 }
 
 function serverLink(name: string) {
@@ -64,7 +64,7 @@ function serverLink(name: string) {
       <div class="min-w-0 space-y-3">
         <template v-if="record.type === 'JOIN'">
           <div class="flex flex-wrap items-center gap-2">
-            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'), record.senderUuid)"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
@@ -77,7 +77,7 @@ function serverLink(name: string) {
 
         <template v-else-if="record.type === 'LEAVE'">
           <div class="flex flex-wrap items-center gap-2">
-            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'), record.senderUuid)"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
@@ -90,7 +90,7 @@ function serverLink(name: string) {
 
         <template v-else-if="record.type === 'TRANSFER'">
           <div class="flex flex-wrap items-center gap-3">
-            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'), record.senderUuid)"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
@@ -99,7 +99,7 @@ function serverLink(name: string) {
               <NuxtLink :to="serverLink(transferFlow.from)" class="inline-flex" @click.stop>
                 <UBadge color="info" variant="soft">{{ transferFlow.from }}</UBadge>
               </NuxtLink>
-              <UIcon name="i-lucide-arrow-right" class="size-4 text-primary"/>
+              <UIcon class="size-4 text-primary" name="i-lucide-arrow-right"/>
               <NuxtLink :to="serverLink(transferFlow.to)" class="inline-flex" @click.stop>
                 <UBadge color="warning" variant="soft">{{ transferFlow.to }}</UBadge>
               </NuxtLink>
@@ -112,28 +112,28 @@ function serverLink(name: string) {
             <NuxtLink :to="serverLink(privateServers.senderServer)" class="inline-flex" @click.stop>
               <UBadge color="info" variant="soft">{{ privateServers.senderServer }}</UBadge>
             </NuxtLink>
-            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'), record.senderUuid)"
                       class="font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
-            <UIcon name="i-lucide-arrow-right" class="size-4 text-primary"/>
+            <UIcon class="size-4 text-primary" name="i-lucide-arrow-right"/>
             <NuxtLink :to="serverLink(privateServers.receiverServer)" class="inline-flex" @click.stop>
               <UBadge color="secondary" variant="soft">{{ privateServers.receiverServer }}</UBadge>
             </NuxtLink>
-            <NuxtLink :to="playerLink(record.receiverName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.receiverName || t('common.unknown'), record.receiverUuid)"
                       class="font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.receiverName || t('common.unknown') }}
             </NuxtLink>
           </div>
 
           <div class="text-sm leading-6 text-highlighted">
-            <MessageHighlighter :text="record.message || '-'" :keyword="keyword || ''"/>
+            <MessageHighlighter :keyword="keyword || ''" :text="record.message || '-'"/>
           </div>
         </template>
 
         <template v-else>
           <div class="flex flex-wrap items-center gap-2 text-sm text-toned">
-            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'))"
+            <NuxtLink :to="playerLink(record.senderName || t('common.unknown'), record.senderUuid)"
                       class="text-base font-semibold text-highlighted hover:text-primary" @click.stop>
               {{ record.senderName || t('common.unknown') }}
             </NuxtLink>
@@ -144,7 +144,7 @@ function serverLink(name: string) {
           </div>
 
           <div class="text-sm leading-6 text-highlighted">
-            <MessageHighlighter :text="record.message || '-'" :keyword="keyword || ''"/>
+            <MessageHighlighter :keyword="keyword || ''" :text="record.message || '-'"/>
           </div>
         </template>
       </div>

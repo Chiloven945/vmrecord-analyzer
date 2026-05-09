@@ -39,15 +39,23 @@ export function parseTransferFlow(record: Pick<NormalizedRecord, 'message' | 'tr
     }
 }
 
-export function resolvePlayerServerAt(records: NormalizedRecord[], playerName: string, timeMs: number) {
-    const target = playerName.trim().toLowerCase()
-    if (!target) return 'Unknown'
+export function resolvePlayerServerAt(records: NormalizedRecord[], playerName: string, timeMs: number, playerUuid = '') {
+    const targetName = playerName.trim().toLowerCase()
+    const targetUuid = playerUuid.trim().toLowerCase()
+    if (!targetName && !targetUuid) return 'Unknown'
 
     for (let index = records.length - 1; index >= 0; index -= 1) {
         const record = records[index]
+        if (!record) continue
         if (record.timeMs > timeMs) continue
         if (!record.server) continue
-        if (record.senderName.trim().toLowerCase() !== target) continue
+
+        const recordSenderUuid = record.senderUuid.trim().toLowerCase()
+        const recordSenderName = record.senderName.trim().toLowerCase()
+        const isTargetPlayer = targetUuid
+            ? recordSenderUuid === targetUuid
+            : recordSenderName === targetName
+        if (!isTargetPlayer) continue
 
         if (record.type === 'TRANSFER') {
             return record.transferTarget || record.server || 'Unknown'
@@ -65,8 +73,8 @@ export function resolvePlayerServerAt(records: NormalizedRecord[], playerName: s
 
 export function getPrivateMessageServers(records: NormalizedRecord[], record: NormalizedRecord) {
     return {
-        senderServer: record.server || resolvePlayerServerAt(records, record.senderName, record.timeMs),
-        receiverServer: resolvePlayerServerAt(records, record.receiverName, record.timeMs)
+        senderServer: record.server || resolvePlayerServerAt(records, record.senderName, record.timeMs, record.senderUuid),
+        receiverServer: resolvePlayerServerAt(records, record.receiverName, record.timeMs, record.receiverUuid)
     }
 }
 

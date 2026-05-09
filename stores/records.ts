@@ -12,6 +12,40 @@ function addHour(map: Record<number, number>, hour: number) {
     map[hour] = (map[hour] || 0) + 1
 }
 
+function normalizeIdentity(value: string) {
+    return value.trim().toLowerCase()
+}
+
+function makePlayerProfileKey(name: string, uuid: string) {
+    const normalizedUuid = normalizeIdentity(uuid)
+    if (normalizedUuid) return `uuid:${normalizedUuid}`
+
+    const normalizedName = normalizeIdentity(name)
+    return normalizedName ? `name:${normalizedName}` : ''
+}
+
+function isChronological(list: readonly NormalizedRecord[]) {
+    for (let index = 1; index < list.length; index += 1) {
+        const previous = list[index - 1]
+        const current = list[index]
+        if (previous && current && previous.timeMs > current.timeMs) return false
+    }
+    return true
+}
+
+function compareRecordsByTime(a: NormalizedRecord, b: NormalizedRecord) {
+    return a.timeMs - b.timeMs || a.id.localeCompare(b.id)
+}
+
+function addNameAlias(profile: PlayerProfile, name: string) {
+    const cleanName = name.trim()
+    if (!cleanName) return
+
+    if (!profile.names.some((item) => normalizeIdentity(item) === normalizeIdentity(cleanName))) {
+        profile.names.push(cleanName)
+    }
+}
+
 export const useRecordsStore = defineStore('records', () => {
     const session = import.meta.client ? window.sessionStorage : undefined
 
@@ -19,17 +53,31 @@ export const useRecordsStore = defineStore('records', () => {
     const sourceFileName = useStorage('vmrecord-analyzer-source-file', '', session)
     const importedAt = useStorage<number | null>('vmrecord-analyzer-imported-at', null, session)
 
+    const chronologicalRecords = computed(() => {
+        const currentRecords = records.value
+        return isChronological(currentRecords)
+            ? currentRecords
+            : [...currentRecords].sort(compareRecordsByTime)
+    })
+
     const playerProfiles = computed<Record<string, PlayerProfile>>(() => {
         const map: Record<string, PlayerProfile> = {}
+        const sessionStartMap: Record<string, number> = {}
 
-        for (const record of records.value) {
+        for (const record of chronologicalRecords.value) {
             const touchPlayer = (name: string, uuid: string, prefix = '', suffix = '') => {
-                if (!name) return null
-                const key = name.toLowerCase()
+                const key = makePlayerProfileKey(name, uuid)
+                if (!key) return null
+
+                const cleanName = name.trim()
+                const cleanUuid = uuid.trim()
+
                 if (!map[key]) {
                     map[key] = {
-                        name,
-                        uuid,
+                        profileKey: key,
+                        name: cleanName || cleanUuid || 'Unknown',
+                        names: cleanName ? [cleanName] : [],
+                        uuid: cleanUuid,
                         firstSeen: record.timeMs,
                         lastSeen: record.timeMs,
                         totalRecords: 0,
@@ -39,6 +87,8 @@ export const useRecordsStore = defineStore('records', () => {
                         joins: 0,
                         leaves: 0,
                         transfers: 0,
+                        playTimeMs: 0,
+                        playSessions: 0,
                         servers: {},
                         contacts: {},
                         activeHours: {},
@@ -48,6 +98,9 @@ export const useRecordsStore = defineStore('records', () => {
                 }
 
                 const profile = map[key]
+                addNameAlias(profile, cleanName)
+                if (cleanName) profile.name = cleanName
+                if (cleanUuid && !profile.uuid) profile.uuid = cleanUuid
                 profile.firstSeen = Math.min(profile.firstSeen ?? record.timeMs, record.timeMs)
                 profile.lastSeen = Math.max(profile.lastSeen ?? record.timeMs, record.timeMs)
                 profile.totalRecords += 1
@@ -66,6 +119,17 @@ export const useRecordsStore = defineStore('records', () => {
                 if (record.type === 'JOIN') sender.joins += 1
                 if (record.type === 'LEAVE') sender.leaves += 1
                 if (record.type === 'TRANSFER') sender.transfers += 1
+                if (record.type === 'JOIN') {
+                    sessionStartMap[sender.profileKey] = record.timeMs
+                }
+                if (record.type === 'LEAVE') {
+                    const sessionStart = sessionStartMap[sender.profileKey]
+                    if (sessionStart !== undefined && record.timeMs >= sessionStart) {
+                        sender.playTimeMs += record.timeMs - sessionStart
+                        sender.playSessions += 1
+                    }
+                    delete sessionStartMap[sender.profileKey]
+                }
                 if (record.isPrivate) sender.privateMessagesSent += 1
             }
 
@@ -73,7 +137,7 @@ export const useRecordsStore = defineStore('records', () => {
                 receiver.privateMessagesReceived += 1
             }
 
-            if (record.isPrivate && sender && receiver && sender.name !== receiver.name) {
+            if (record.isPrivate && sender && receiver && sender.profileKey !== receiver.profileKey) {
                 addCount(sender.contacts, receiver.name)
                 addCount(receiver.contacts, sender.name)
             }
@@ -81,6 +145,40 @@ export const useRecordsStore = defineStore('records', () => {
 
         return map
     })
+
+    const playerProfileAliases = computed<Record<string, string>>(() => {
+        const aliases: Record<string, string> = {}
+
+        for (const [key, profile] of Object.entries(playerProfiles.value)) {
+            aliases[key] = key
+
+            const normalizedUuid = normalizeIdentity(profile.uuid)
+            if (normalizedUuid) {
+                aliases[`uuid:${normalizedUuid}`] = key
+                aliases[normalizedUuid] = key
+            }
+
+            for (const name of profile.names.length ? profile.names : [profile.name]) {
+                const normalizedName = normalizeIdentity(name)
+                if (!normalizedName) continue
+
+                aliases[`name:${normalizedName}`] ||= key
+                aliases[normalizedName] ||= key
+            }
+        }
+
+        return aliases
+    })
+
+    function resolvePlayerProfileKey(identifier: string) {
+        const normalizedIdentifier = normalizeIdentity(identifier)
+        if (!normalizedIdentifier) return ''
+
+        return playerProfileAliases.value[normalizedIdentifier]
+            || playerProfileAliases.value[`uuid:${normalizedIdentifier}`]
+            || playerProfileAliases.value[`name:${normalizedIdentifier}`]
+            || ''
+    }
 
     const players = computed(() =>
         Object.values(playerProfiles.value).sort((a, b) => b.totalRecords - a.totalRecords)
@@ -155,9 +253,11 @@ export const useRecordsStore = defineStore('records', () => {
     const conversationMap = computed<Record<string, NormalizedRecord[]>>(() => {
         const map: Record<string, NormalizedRecord[]> = {}
         for (const record of records.value) {
-            if (!record.conversationKey) continue
-            if (!map[record.conversationKey]) map[record.conversationKey] = []
-            map[record.conversationKey].push(record)
+            const key = record.conversationKey
+            if (!key) continue
+
+            const list = map[key] ?? (map[key] = [])
+            list.push(record)
         }
         return map
     })
@@ -170,8 +270,8 @@ export const useRecordsStore = defineStore('records', () => {
         for (const r of records.value) {
             if (r.server) addCount(serverCounts, r.server)
             addCount(typeCounts, r.type)
-            if (r.senderName) activePlayers.add(r.senderName.toLowerCase())
-            if (r.receiverName) activePlayers.add(r.receiverName.toLowerCase())
+            if (r.senderName || r.senderUuid) activePlayers.add(makePlayerProfileKey(r.senderName, r.senderUuid))
+            if (r.receiverName || r.receiverUuid) activePlayers.add(makePlayerProfileKey(r.receiverName, r.receiverUuid))
         }
 
         return {
@@ -217,6 +317,8 @@ export const useRecordsStore = defineStore('records', () => {
         stats,
         players,
         playerProfiles,
+        playerProfileAliases,
+        resolvePlayerProfileKey,
         servers,
         serverProfiles,
         conversationMap,

@@ -38,7 +38,32 @@
     "title": "Settings",
     "description": "Adjust application preferences here.",
     "language": "Language",
-    "languageDescription": "Switch the interface language. Changes will be applied immediately."
+    "languageDescription": "Switch the interface language. Changes will be applied immediately.",
+    "tabs": {
+      "language": "Language",
+      "timeFormat": "Time format"
+    },
+    "duration": {
+      "title": "Time format",
+      "description": "Control how durations such as total play time are displayed.",
+      "mode": "Display format",
+      "maxUnit": "Largest time unit",
+      "minUnit": "Smallest time unit",
+      "unitCount": "Number of units shown",
+      "unitCountOption": "{count} unit(s)",
+      "previewLabel": "Preview",
+      "previewDescription": "These settings apply to total play time in player profiles.",
+      "modes": {
+        "localized": "Localized text",
+        "colon": "Colon format"
+      },
+      "units": {
+        "day": "Days",
+        "hour": "Hours",
+        "minute": "Minutes",
+        "second": "Seconds"
+      }
+    }
   },
   "upload": {
     "title": "Import vMessageRecord CSV",
@@ -133,12 +158,16 @@
       "recentDesc": "Recent activity (newest first)",
       "recentAsc": "Recent activity (oldest first)",
       "nameAsc": "Player name (A-Z)",
-      "nameDesc": "Player name (Z-A)"
+      "nameDesc": "Player name (Z-A)",
+      "playtimeDesc": "Play time (longest first)",
+      "playtimeAsc": "Play time (shortest first)"
     },
     "totalActivities": "{count} activities",
     "publicChat": "Public chat",
     "privateSent": "Private sent",
     "privateReceived": "Private received",
+    "playTime": "Total play time",
+    "playTimeSessions": "Based on {count} completed join-to-leave records",
     "dominantServer": "Main server: {server}",
     "backToList": "Back to players",
     "notFoundTitle": "Player not found",

@@ -38,7 +38,32 @@
     "title": "設定",
     "description": "在這裡調整應用偏好設定。",
     "language": "語言",
-    "languageDescription": "切換介面顯示語言，更改後會立即應用。"
+    "languageDescription": "切換介面顯示語言，更改後會立即應用。",
+    "tabs": {
+      "language": "語言",
+      "timeFormat": "時間格式"
+    },
+    "duration": {
+      "title": "時間格式",
+      "description": "控制遊玩時長等持續時間的顯示方式。",
+      "mode": "顯示格式",
+      "maxUnit": "最大時間單位",
+      "minUnit": "最小時間單位",
+      "unitCount": "顯示單位數量",
+      "unitCountOption": "{count} 個單位",
+      "previewLabel": "預覽",
+      "previewDescription": "這些設定會套用到玩家檔案裡的累計遊玩時長。",
+      "modes": {
+        "localized": "在地化文字",
+        "colon": "冒號格式"
+      },
+      "units": {
+        "day": "天",
+        "hour": "小時",
+        "minute": "分鐘",
+        "second": "秒"
+      }
+    }
   },
   "upload": {
     "title": "匯入 vMessageRecord CSV",
@@ -133,12 +158,16 @@
       "recentDesc": "最近活動（最新在前）",
       "recentAsc": "最近活動（最早在前）",
       "nameAsc": "玩家名稱（A-Z）",
-      "nameDesc": "玩家名稱（Z-A）"
+      "nameDesc": "玩家名稱（Z-A）",
+      "playtimeDesc": "遊玩時長（長到短）",
+      "playtimeAsc": "遊玩時長（短到長）"
     },
     "totalActivities": "共 {count} 條活動",
     "publicChat": "公聊",
     "privateSent": "私聊發送",
     "privateReceived": "私聊接收",
+    "playTime": "累計遊玩時長",
+    "playTimeSessions": "根據 {count} 次完整進出記錄統計",
     "dominantServer": "常駐伺服器：{server}",
     "backToList": "返回玩家列表",
     "notFoundTitle": "未找到該玩家",

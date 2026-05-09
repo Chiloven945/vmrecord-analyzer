@@ -38,7 +38,32 @@
     "title": "設定",
     "description": "ここでアプリケーションの設定を変更できます。",
     "language": "言語",
-    "languageDescription": "インターフェースの言語を切り替えます。変更はすぐに適用されます。"
+    "languageDescription": "インターフェースの言語を切り替えます。変更はすぐに適用されます。",
+    "tabs": {
+      "language": "言語",
+      "timeFormat": "時間形式"
+    },
+    "duration": {
+      "title": "時間形式",
+      "description": "累計プレイ時間などの表示方法を設定します。",
+      "mode": "表示形式",
+      "maxUnit": "最大時間単位",
+      "minUnit": "最小時間単位",
+      "unitCount": "表示する単位数",
+      "unitCountOption": "{count} 個の単位",
+      "previewLabel": "プレビュー",
+      "previewDescription": "この設定はプレイヤープロフィールの累計プレイ時間に適用されます。",
+      "modes": {
+        "localized": "ローカライズ表記",
+        "colon": "コロン形式"
+      },
+      "units": {
+        "day": "日",
+        "hour": "時間",
+        "minute": "分",
+        "second": "秒"
+      }
+    }
   },
   "upload": {
     "title": "vMessageRecord CSV をインポート",
@@ -133,12 +158,16 @@
       "recentDesc": "最近の活動（新しい順）",
       "recentAsc": "最近の活動（古い順）",
       "nameAsc": "プレイヤー名（A-Z）",
-      "nameDesc": "プレイヤー名（Z-A）"
+      "nameDesc": "プレイヤー名（Z-A）",
+      "playtimeDesc": "プレイ時間（長い順）",
+      "playtimeAsc": "プレイ時間（短い順）"
     },
     "totalActivities": "{count} 件の活動",
     "publicChat": "公開チャット",
     "privateSent": "送信した私聊",
     "privateReceived": "受信した私聊",
+    "playTime": "累計プレイ時間",
+    "playTimeSessions": "{count} 件の入退室記録から集計",
     "dominantServer": "主なサーバー: {server}",
     "backToList": "プレイヤー一覧に戻る",
     "notFoundTitle": "プレイヤーが見つかりません",
