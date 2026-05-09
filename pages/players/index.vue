@@ -25,7 +25,7 @@ const sortOptions = computed(() => [
   {label: t('player.sort.recentAsc'), value: 'recent-asc'},
   {label: t('player.sort.nameAsc'), value: 'name-asc'},
   {label: t('player.sort.nameDesc'), value: 'name-desc'}
-] as const)
+])
 
 function toCalendarDate(value?: string) {
   if (!value) return undefined
@@ -47,31 +47,34 @@ const dateRange = computed({
   }
 })
 
+function getParticipantKey(name: string, uuid: string) {
+  const normalizedUuid = uuid.trim().toLowerCase()
+  if (normalizedUuid) return `uuid:${normalizedUuid}`
+
+  const normalizedName = name.trim().toLowerCase()
+  return normalizedName ? `name:${normalizedName}` : ''
+}
+
 const playerMeta = computed(() => {
   const latestTypeMap: Record<string, Set<string>> = {}
 
+  const addType = (key: string, type: string) => {
+    if (!key) return
+    if (!latestTypeMap[key]) latestTypeMap[key] = new Set<string>()
+    latestTypeMap[key].add(type)
+  }
+
   for (const record of store.records) {
-    const senderKey = record.senderName.trim().toLowerCase()
-    const receiverKey = record.receiverName.trim().toLowerCase()
-
-    if (senderKey) {
-      if (!latestTypeMap[senderKey]) latestTypeMap[senderKey] = new Set<string>()
-      latestTypeMap[senderKey].add(record.type)
-    }
-
-    if (receiverKey) {
-      if (!latestTypeMap[receiverKey]) latestTypeMap[receiverKey] = new Set<string>()
-      latestTypeMap[receiverKey].add(record.type)
-    }
+    addType(getParticipantKey(record.senderName, record.senderUuid), record.type)
+    addType(getParticipantKey(record.receiverName, record.receiverUuid), record.type)
   }
 
   return store.players.map((player) => {
-    const key = player.name.trim().toLowerCase()
-    const lastServer = resolvePlayerServerAt(store.records, player.name, player.lastSeen || 0)
+    const lastServer = resolvePlayerServerAt(store.records, player.name, player.lastSeen || 0, player.uuid)
     return {
       player,
       lastServer,
-      types: [...(latestTypeMap[key] || new Set<string>())]
+      types: [...(latestTypeMap[player.profileKey] || new Set<string>())]
     }
   })
 })
@@ -99,6 +102,7 @@ const filteredPlayers = computed(() => {
       const haystack = [
         player.name,
         player.uuid,
+        ...player.names,
         ...player.prefixes,
         ...player.suffixes,
         lastServer,

@@ -79,7 +79,9 @@ export interface NormalizedRecord {
 }
 
 export interface PlayerProfile {
+    profileKey: string
     name: string
+    names: string[]
     uuid: string
     firstSeen?: number
     lastSeen?: number

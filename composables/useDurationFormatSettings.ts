@@ -79,7 +79,10 @@ export function useDurationFormatSettings() {
     const settings = computed({
         get: () => normalizeDurationFormatSettings(rawSettings.value),
         set: (value: Partial<DurationFormatSettings>) => {
-            rawSettings.value = normalizeDurationFormatSettings(value)
+            rawSettings.value = normalizeDurationFormatSettings({
+                ...normalizeDurationFormatSettings(rawSettings.value),
+                ...value
+            })
         }
     })
 
